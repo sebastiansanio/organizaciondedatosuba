@@ -62,7 +62,7 @@ class indice{
 		indice(list<string>&,string nombre_arch);//lista de nombres de los archivos XML
 
 		/*Constructor para el indice ya creado*/
-		indice(string nombre_arch);
+		indice(string nombre_arch); //el nombre no posee la extension
 
 
 		/*retorna el id del staff, -1 sino lo encuentra*/

@@ -1,5 +1,13 @@
 #include "Indice.h"
 
+indice::indice(string nombre_arch){
+	this->n_arch_indice=nombre_arch + ".idx";
+	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
+	this->n_arch_principal=nombre_arch + "p" + ".ppal";
+
+	//falta ver como recuperamos cuantos actores tiene el indice
+}
+
 salidas indice::getID_staff(const string& nombre, int& id){
 
 	//se realizaria la busqueda binaria en el indice con el nombre obtenido y se devuelve el offset en el indice mediante id y se retorna exito. Si no se encuentra se retorna error
