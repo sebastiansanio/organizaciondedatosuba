@@ -9,15 +9,15 @@
 using namespace std;
 
 struct es_indice{
-	long int offset_al_nombre;
-	long int offset_al_ppal;
+	int offset_al_nombre;
+	int offset_al_ppal;
 	char profesion;
 };
 
 struct es_ppal{
 	char distancia_a_padre;
-	long int id;
-	long int offset_proximo;
+	int id;
+	int offset_proximo;
 };
 
 struct es_conc_nom{
@@ -53,10 +53,10 @@ class indice{
 	public:
 
 		/*Constructor para crear el indice a partir de varios XML*/
-		indice(list<string>&);//lista de nombres de los archivos XML
+		indice(list<string>&,string nombre_arch);//lista de nombres de los archivos XML
 
 		/*Constructor para el indice ya creado*/
-		indice(string);
+		indice(string nombre_arch);
 
 
 		/*retorna el id del staff, -1 sino lo encuentra*/
