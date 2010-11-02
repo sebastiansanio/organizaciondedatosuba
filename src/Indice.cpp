@@ -54,6 +54,8 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
 	}
 
+	fclose(archivo_indice);
+	fclose(archivo_ppal);
 	return exito;
 }
 
@@ -100,12 +102,32 @@ salidas indice::getStaff(int ID_staff,staff& staff_d){
 
 	staff_d=aux;
 
+	fclose(archivo_conc);
+	fclose(archivo_indice);
+
 	return exito;
 }
 
-salidas indice::getNombrePelicula (string&, int ID_pelicula){
+salidas indice::getNombrePelicula (string& nombre, int ID_pelicula){
 
 	//se accede mediante el ID_peliculas al archivo de concat de strings y se extrae el nombre
 
-	return error;
+	FILE * archivo_conc;
+	archivo_conc = fopen(this->n_arch_conc_string.c_str(),"r+b");
+
+	if(!archivo_conc)
+		return error;
+
+	fseek(archivo_conc,ID_pelicula,SEEK_SET);
+
+	es_conc_nom nombre_pel;
+
+	fread((void*)&nombre_pel.longitud,sizeof(nombre_pel.longitud),1,archivo_conc);
+	fread((void*)&nombre_pel.string,nombre_pel.longitud*sizeof(char),1,archivo_conc);
+
+	nombre=nombre_pel.string;
+
+	fclose(archivo_conc);
+
+	return exito;
 }
