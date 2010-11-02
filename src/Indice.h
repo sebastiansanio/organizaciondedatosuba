@@ -107,7 +107,7 @@ class indice{
  *		.
  *		..
  *		...
- *		....
+ *		....Si es el ultimo se guarda el offset al primero
  *
  *	el concatenacion:
  *
