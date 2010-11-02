@@ -3,7 +3,9 @@
 
 #include "Parser.h"
 #include "Peliculas.h"
-
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 
 using namespace std;
