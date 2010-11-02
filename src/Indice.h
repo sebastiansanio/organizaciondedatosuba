@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// estructuras para manejar los archivos de los indices
 struct es_indice{
 	int offset_al_nombre;
 	int offset_al_ppal;
@@ -26,6 +27,9 @@ struct es_conc_nom{
 };
 
 typedef enum {error, exito}salidas;
+
+
+//clases para llevar a cabo el indice
 
 class sta_indice{
 	private:
@@ -86,7 +90,7 @@ class indice{
  *
  * el indice:
  *
- * offset al nombre; //serai del archivo de concatenacion de strings
+ * offset al nombre en arch concat de string; //serai del archivo de concatenacion de strings
  * profesion;
  * offset a donde empieza en archivo principal;
  *
