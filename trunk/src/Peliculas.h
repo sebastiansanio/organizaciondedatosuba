@@ -20,12 +20,12 @@ using namespace std;
 class staff {
 	private:
 		char profesion;
-		string nombre;
+		char * nombre;
 
 	public:
-		staff(string,char);
+		staff(char *nomb,char prof){this->profesion=prof;this->nombre=nomb;}
 		char getProfesion (){return profesion;}
-		string getNombre(){return nombre;}
+		char* getNombre(){return nombre;}
 
 };
 

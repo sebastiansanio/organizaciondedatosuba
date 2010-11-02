@@ -66,11 +66,41 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	return error;
 }
 
-salidas indice::getStaff(int ID_staff,staff& staff){
+salidas indice::getStaff(int ID_staff,staff& staff_d){
 
 	//se accede mediante ID_staff al offset en el indice y se extrae la informacion
 
-	return error;
+	FILE * archivo_indice;
+	archivo_indice = fopen(this->n_arch_indice.c_str(),"r+b");
+
+	if((!archivo_indice)or(ID_staff>this->cantidad_staff*sizeof(es_indice)))
+		return error;
+
+	fseek(archivo_indice,ID_staff,SEEK_SET);
+
+	es_indice staff_aux;
+
+	fread((void*)&staff_aux.offset_al_nombre,sizeof(staff_aux.offset_al_nombre),1,archivo_indice);
+	fread((void*)&staff_aux.offset_al_ppal,sizeof(staff_aux.offset_al_ppal),1,archivo_indice);
+	fread((void*)&staff_aux.profesion,sizeof(staff_aux.profesion),1,archivo_indice);
+
+	FILE * archivo_conc;
+	archivo_conc = fopen(this->n_arch_conc_string.c_str(),"r+b");
+
+	if(!archivo_conc)
+		return error;
+
+	fseek(archivo_conc,staff_aux.offset_al_nombre,SEEK_SET);
+
+	es_conc_nom nombre;
+	fread((void*)&nombre.longitud,sizeof(nombre.longitud),1,archivo_conc);
+	fread((void*)&nombre.string,nombre.longitud*sizeof(char),1,archivo_conc);
+
+	staff aux(nombre.string,staff_aux.profesion);
+
+	staff_d=aux;
+
+	return exito;
 }
 
 salidas indice::getNombrePelicula (string&, int ID_pelicula){
