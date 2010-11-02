@@ -65,7 +65,77 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	// se toma con la estructura correspondiente y se va al siguiente con el "offset al siguiente que trabajo en esa pelicula"
 	//se repite esto hasta que se llegue denuevo al Id_staff con el que se empezó
 
-	return error;
+	FILE * archivo_indice;
+	archivo_indice = fopen(this->n_arch_indice.c_str(),"r+b");
+
+	if((!archivo_indice)or(Id_staff>this->cantidad_staff*sizeof(es_indice)))
+		return error;
+
+	fseek(archivo_indice,Id_staff,SEEK_SET);
+
+	es_indice staff_in;
+
+	fread((void*)&staff_in.offset_al_nombre,sizeof(staff_in.offset_al_nombre),1,archivo_indice);
+	fread((void*)&staff_in.offset_al_ppal,sizeof(staff_in.offset_al_ppal),1,archivo_indice);
+	fread((void*)&staff_in.profesion,sizeof(staff_in.profesion),1,archivo_indice);
+
+	FILE * archivo_ppal;
+	archivo_ppal = fopen(this->n_arch_principal.c_str(),"r+b");
+
+	if(!archivo_ppal)
+		return error;
+
+	fseek(archivo_ppal,staff_in.offset_al_ppal,SEEK_SET);
+
+	es_ppal staff_aux,pelicula;
+
+	fread((void*)&staff_aux.distancia_a_padre,sizeof(staff_aux.distancia_a_padre),1,archivo_ppal);
+	fread((void*)&staff_aux.id,sizeof(staff_aux.id),1,archivo_ppal);
+	fread((void*)&staff_aux.offset_proximo,sizeof(staff_aux.offset_proximo),1,archivo_ppal);
+
+	if((staff_aux.distancia_a_padre!=0)or(staff_aux.id!=Id_staff))
+		return error;//porque quiere decir que no empezo levantando el actor por lo que esta mal o que no es el id del staff realmente buscado
+
+	fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
+	fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+	fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+
+	while(pelicula.id!=ID_pelicula){
+		if(feof(archivo_ppal)) return error;
+		fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
+		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+		if(pelicula.distancia_a_padre==0) return error; //quiere decir que no tiene la pelicula
+	}
+
+	es_ppal staff_levantado;
+	int offset_proximo=pelicula.offset_proximo;
+
+	//vaya yendo a todos los offset al proximo hasta que vuelva al primero
+	while(staff_levantado.id!=Id_staff){
+		fseek(archivo_ppal,offset_proximo,SEEK_SET);
+		fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
+		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+
+		fseek(archivo_ppal,offset_proximo - (int)pelicula.distancia_a_padre,SEEK_SET);
+		fread((void*)&staff_levantado.distancia_a_padre,sizeof(staff_levantado.distancia_a_padre),1,archivo_ppal);
+		fread((void*)&staff_levantado.id,sizeof(staff_levantado.id),1,archivo_ppal);
+
+		if(staff_levantado.distancia_a_padre!=0)
+			return error;//quiere decir que no llego a un id de actor
+
+		if(staff_levantado.id!=Id_staff)
+			ID_staff.push_front(staff_levantado.id);
+
+		offset_proximo=pelicula.offset_proximo;
+
+	}
+
+	fclose(archivo_indice);
+	fclose(archivo_ppal);
+
+	return exito;
 }
 
 salidas indice::getStaff(int ID_staff,staff& staff_d){
