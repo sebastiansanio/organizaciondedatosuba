@@ -1,10 +1,10 @@
 #include "Parser.h"
 
-parser::parser(char* nombre){
+parser::parser(const char* nombre){
 
 }
 
-int getPelicula(pelicula& pel){
-
+int parser::getPelicula(pelicula& pel){
+	return 0;
 }
 

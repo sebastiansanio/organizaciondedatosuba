@@ -15,7 +15,7 @@ class parser{
 
 
 	public:
-		parser(char* nombre);
+		parser(const char* nombre);
 		int getPelicula (pelicula&);
 
 

@@ -37,6 +37,7 @@ class pelicula {
 
 	public:
 		pelicula(string,int);
+		string getNombre();
 		void addStaff(staff);
 		list<staff> getStaff();
 };
