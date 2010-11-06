@@ -1,9 +1,31 @@
 #include "Indice.h"
 
+indice::indice(list<string>& listaDeArchivos,string nombre_arch){
+	parser* prs;
+	pelicula* peli;
+	list<string>::iterator it=listaDeArchivos.begin();
+	this->n_arch_indice=nombre_arch + ".idx";
+	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
+	this->n_arch_principal=nombre_arch + "p" + ".ppal";
+
+	while (it!=listaDeArchivos.end()){
+		prs = new parser((char*)(it->c_str()));
+
+		while(!(prs->getPelicula(*peli))){
+
+
+		}
+		delete prs;
+		it++;
+	}
+}
+
 indice::indice(string nombre_arch){
 	this->n_arch_indice=nombre_arch + ".idx";
 	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
 	this->n_arch_principal=nombre_arch + "p" + ".ppal";
+
+
 
 	//falta ver como recuperamos cuantos actores tiene el indice
 }
