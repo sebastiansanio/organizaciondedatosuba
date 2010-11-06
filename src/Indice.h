@@ -3,6 +3,7 @@
 
 #include "Parser.h"
 #include "Peliculas.h"
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>

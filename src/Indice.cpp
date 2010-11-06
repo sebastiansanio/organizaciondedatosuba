@@ -3,16 +3,16 @@
 indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	parser* prs;
 	pelicula* peli;
+	string* nombreDePeli=new string();
 	list<string>::iterator it=listaDeArchivos.begin();
 	this->n_arch_indice=nombre_arch + ".idx";
 	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
 	this->n_arch_principal=nombre_arch + "p" + ".ppal";
 
 	while (it!=listaDeArchivos.end()){
-		prs = new parser((char*)(it->c_str()));
-
+		prs = new parser((it->c_str()));
 		while(!(prs->getPelicula(*peli))){
-
+			*nombreDePeli=peli->getNombre();
 
 		}
 		delete prs;
