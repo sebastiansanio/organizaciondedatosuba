@@ -15,8 +15,6 @@
 
 using namespace std;
 
-
-
 class staff {
 	private:
 		char profesion;
