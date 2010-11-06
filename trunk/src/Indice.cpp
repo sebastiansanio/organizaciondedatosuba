@@ -1,5 +1,7 @@
 #include "Indice.h"
 
+
+
 indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	struct registroAuxiliar{
@@ -7,6 +9,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 		char nombreDePelicula[100];
 		char profesion;
 	};
+
 	FILE * archivoAuxiliar;
 	registroAuxiliar registroAux;
 	parser* prs;
@@ -36,6 +39,17 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 		it++;
 	}
 	fclose(archivoAuxiliar);
+
+	//Acá hay que ordenar el archivo por película
+
+	archivoAuxiliar=fopen("auxiliar","w");
+	while (!feof(archivoAuxiliar)){
+		char nombrePelicula[100];
+		fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+		strcpy(nombrePelicula,registroAux.nombreDePelicula);
+
+
+	}
 
 
 }
