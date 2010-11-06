@@ -5,6 +5,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	struct registroAuxiliar{
 		char nombreDeActor[100];
 		char nombreDePelicula[100];
+		char profesion;
 	};
 	FILE * archivoAuxiliar;
 	registroAuxiliar registroAux;
@@ -15,6 +16,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	this->n_arch_indice=nombre_arch + ".idx";
 	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
 	this->n_arch_principal=nombre_arch + "p" + ".ppal";
+
 	archivoAuxiliar=fopen("auxiliar","w");
 
 	while (it!=listaDeArchivos.end()){
@@ -25,6 +27,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			list<staff>::iterator itStaff=listaStaff.begin();
 			while(itStaff!=listaStaff.end()){
 				strcpy(registroAux.nombreDeActor,(itStaff->getNombre()));
+				registroAux.profesion=itStaff->getProfesion();
 				fwrite(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
 				itStaff++;
 			}
