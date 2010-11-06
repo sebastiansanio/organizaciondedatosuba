@@ -1,23 +1,40 @@
 #include "Indice.h"
 
 indice::indice(list<string>& listaDeArchivos,string nombre_arch){
+
+	struct registroAuxiliar{
+		char nombreDeActor[100];
+		char nombreDePelicula[100];
+	};
+	FILE * archivoAuxiliar;
+	registroAuxiliar registroAux;
 	parser* prs;
 	pelicula* peli;
-	string* nombreDePeli=new string();
+	list<staff> listaStaff;
 	list<string>::iterator it=listaDeArchivos.begin();
 	this->n_arch_indice=nombre_arch + ".idx";
 	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
 	this->n_arch_principal=nombre_arch + "p" + ".ppal";
+	archivoAuxiliar=fopen("auxiliar","w");
 
 	while (it!=listaDeArchivos.end()){
 		prs = new parser((it->c_str()));
 		while(!(prs->getPelicula(*peli))){
-			*nombreDePeli=peli->getNombre();
-
+			strcpy(registroAux.nombreDePelicula,(peli->getNombre()).c_str());
+			listaStaff=peli->getStaff();
+			list<staff>::iterator itStaff=listaStaff.begin();
+			while(itStaff!=listaStaff.end()){
+				strcpy(registroAux.nombreDeActor,(itStaff->getNombre()));
+				fwrite(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+				itStaff++;
+			}
 		}
 		delete prs;
 		it++;
 	}
+	fclose(archivoAuxiliar);
+
+
 }
 
 indice::indice(string nombre_arch){
