@@ -1,10 +1,3 @@
-/*
- * Consulta.h
- *
- *  Created on: Oct 22, 2010
- *      Author: santiago
- */
-
 #ifndef CONSULTA_H_
 #define CONSULTA_H_
 
@@ -12,24 +5,38 @@
 
 using namespace std;
 
+#define CANTVERTICES 11
+
+typedef struct {
+	bool conocido;
+	int distancia;
+	int padre;
+	int pelicula;
+} datosStaff;
+
+typedef struct {
+	int hijo;
+	int pelicula;
+} peliculaHijo;
+
 class consulta {
 	private:
-		typedef enum {degree_entre_actores,degree_hasta_actor}tipo;
 		indice index;
 		list<string> res_consulta;
 
 	public:
-		consulta (string& );
+		consulta();
+
+		list<peliculaHijo> staffHijos(int staffID);
 
 		/* Calcula los grados de separación entre dos actores*/
-		salidas degree(const string&,const string&);
+		list<peliculaHijo> caminoMinimoActores(int staffOrigen, int staffDestino, int gradoMax);
 
 		/* Calcula todos los actores que se encuentran en un cierto grado de
 		 * separacion*/
-		salidas degree(const string&,int);
+		salidas actoresAGrados(int staffOrigen, int grado);
 
-		void imprimir(tipo);
-
+		void imprimir();
 };
 
 #endif /* CONSULTA_H_ */
