@@ -3,25 +3,38 @@
 
 
 indice::indice(list<string>& listaDeArchivos,string nombre_arch){
-
+	//Declaración de variables y estructuras locales
 	struct registroAuxiliar{
 		char nombreDeActor[100];
 		char nombreDePelicula[100];
 		char profesion;
 	};
+	struct registroAuxiliar2{
+		char nombreDeActor[100];
+		int offsetPelicula;
+		char profesion;
+	};
 
-	FILE * archivoAuxiliar;
+	FILE * archivoDeStrings; //Archivo de concatenación de strings
+	FILE * archivoAuxiliar; //Contendrá registros de la forma registroAuxiliar
+	FILE * archivoAuxiliar2; //Contendrá registros de la forma registroAuxiliar2
+	int offset;				//Servirá como variable auxiliar para guardar offsets
 	registroAuxiliar registroAux;
+	registroAuxiliar2 registroAux2;
+	size_t tamAux;	//Almacenará tamaños de cadenas de caracteres.
 	parser* prs;
 	pelicula* peli;
+	char nombrePelicula[100];
 	list<staff> listaStaff;
 	list<string>::iterator it=listaDeArchivos.begin();
 	this->n_arch_indice=nombre_arch + ".idx";
 	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
 	this->n_arch_principal=nombre_arch + "p" + ".ppal";
 
-	archivoAuxiliar=fopen("auxiliar","w");
-
+	//En esta primera etapa se crea un archivo auxiliar con registros de la forma
+	// Nombre de actor|nombre de película|Profesión
+	//El tamaño de los registros es de tamaño fijo.
+	archivoAuxiliar=fopen("auxiliar","w+b");
 	while (it!=listaDeArchivos.end()){
 		prs = new parser((it->c_str()));
 		while(!(prs->getPelicula(*peli))){
@@ -42,15 +55,31 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	//Acá hay que ordenar el archivo por película
 
-	archivoAuxiliar=fopen("auxiliar","w");
+	//Se crea la concatenación de strings de nombres de película y se asignan los offset.
+	archivoAuxiliar=fopen("auxiliar","r+b");
+	if (feof(archivoAuxiliar)) return;
+	archivoDeStrings=fopen(this->n_arch_conc_string.c_str(),"w+b");
+	archivoAuxiliar2=fopen("auxiliar2","w+b");
+
+	offset=0;
+	fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+	strcpy(nombrePelicula,registroAux.nombreDePelicula);
+	tamAux=strlen(nombrePelicula);
+	fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
+	offset=offset+sizeof(size_t);
+	fwrite(nombrePelicula,strlen(nombrePelicula),1,archivoDeStrings);
+	offset=offset+strlen(nombrePelicula);
+
+
 	while (!feof(archivoAuxiliar)){
-		char nombrePelicula[100];
-		fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
-		strcpy(nombrePelicula,registroAux.nombreDePelicula);
+			fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+
 
 
 	}
 
+	//Acá hay que ordenar el archivo por actor
+	//Se crea la concatenación de nombres de actores
 
 }
 
