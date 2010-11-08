@@ -5,8 +5,8 @@
 indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	//Declaración de variables y estructuras locales
 	struct registroAuxiliar{
-		char nombreDeActor[100];
-		char nombreDePelicula[100];
+		char* nombreDeActor;
+		char* nombreDePelicula;
 		char profesion;
 	};
 	struct registroAuxiliar2{
@@ -16,15 +16,20 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	};
 
 	FILE * archivoDeStrings; //Archivo de concatenación de strings
+	FILE * archivoIndice;
+	FILE * archivoPrincipal;
 	FILE * archivoAuxiliar; //Contendrá registros de la forma registroAuxiliar
 	FILE * archivoAuxiliar2; //Contendrá registros de la forma registroAuxiliar2
+	es_ppal registroPrincipal;
+	es_indice registroIndice;
 	int offset;				//Servirá como variable auxiliar para guardar offsets
 	registroAuxiliar registroAux;
 	registroAuxiliar2 registroAux2;
 	size_t tamAux;	//Almacenará tamaños de cadenas de caracteres.
 	parser* prs;
 	pelicula* peli;
-	char nombrePelicula[100];
+	char *nombrePelicula;
+	char *nombreActor;
 	list<staff> listaStaff;
 	list<string>::iterator it=listaDeArchivos.begin();
 	this->n_arch_indice=nombre_arch + ".idx";
@@ -53,7 +58,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	}
 	fclose(archivoAuxiliar);
 
-	//Acá hay que ordenar el archivo por película
+	//Acá hay que ordenar el archivo auxiliar por película
 
 	//Se crea la concatenación de strings de nombres de película y se asignan los offset.
 	archivoAuxiliar=fopen("auxiliar","r+b");
@@ -63,23 +68,56 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	offset=0;
 	fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+	strcpy(registroAux2.nombreDeActor,registroAux.nombreDeActor);
+	registroAux2.offsetPelicula=offset;
+	registroAux2.profesion=registroAux.profesion;
+	fwrite(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+	tamAux=strlen(registroAux.nombreDePelicula);
+	nombrePelicula=(char*)malloc(tamAux);
 	strcpy(nombrePelicula,registroAux.nombreDePelicula);
-	tamAux=strlen(nombrePelicula);
 	fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
-	offset=offset+sizeof(size_t);
-	fwrite(nombrePelicula,strlen(nombrePelicula),1,archivoDeStrings);
-	offset=offset+strlen(nombrePelicula);
-
+	fwrite(nombrePelicula,tamAux,1,archivoDeStrings);
 
 	while (!feof(archivoAuxiliar)){
-			fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+		fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+		if (strcmp(registroAux.nombreDePelicula,nombrePelicula)==0){
+			strcpy(registroAux2.nombreDeActor,registroAux.nombreDeActor);
+			registroAux2.profesion=registroAux.profesion;
+			registroAux2.offsetPelicula=offset;
+			fwrite(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+		}
+		else{
+			strcpy(registroAux2.nombreDeActor,registroAux.nombreDeActor);
+			registroAux2.profesion=registroAux.profesion;
+			tamAux=strlen(registroAux.nombreDePelicula);
+			realloc(nombrePelicula,tamAux);
+			strcpy(nombrePelicula,registroAux.nombreDePelicula);
+			fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
+			fwrite(nombrePelicula,tamAux,1,archivoDeStrings);
+			offset=offset+sizeof(size_t)+tamAux;
+			registroAux2.offsetPelicula=offset;
+			fwrite(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+		}
+	}
+	free(nombrePelicula);
+	fclose(archivoAuxiliar2);
 
+	//Acá hay que ordenar el archivo auxiliar 2 por actor
+
+	//Se crea el índice de actores y la concatenación de strings de sus nombres.
+	archivoAuxiliar2=fopen("auxiliar2","r+b");
+	archivoIndice=fopen(this->n_arch_indice.c_str(),"w+b");
+	archivoPrincipal=fopen(this->n_arch_principal.c_str(),"w+b");
+
+	fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+
+
+	while (!feof(archivoAuxiliar2)){
+		fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
 
 
 	}
 
-	//Acá hay que ordenar el archivo por actor
-	//Se crea la concatenación de nombres de actores
 
 }
 
