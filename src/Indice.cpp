@@ -22,6 +22,8 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	FILE * archivoAuxiliar2; //Contendrá registros de la forma registroAuxiliar2
 	es_ppal registroPrincipal;
 	es_indice registroIndice;
+	char distancia_a_padre;
+	int idAux;
 	int offset;				//Servirá como variable auxiliar para guardar offsets
 	registroAuxiliar registroAux;
 	registroAuxiliar2 registroAux2;
@@ -90,7 +92,8 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			strcpy(registroAux2.nombreDeActor,registroAux.nombreDeActor);
 			registroAux2.profesion=registroAux.profesion;
 			tamAux=strlen(registroAux.nombreDePelicula);
-			realloc(nombrePelicula,tamAux);
+			free(nombrePelicula);
+			nombrePelicula=(char*)malloc(tamAux);
 			strcpy(nombrePelicula,registroAux.nombreDePelicula);
 			fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
 			fwrite(nombrePelicula,tamAux,1,archivoDeStrings);
@@ -106,17 +109,31 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
 	archivoAuxiliar2=fopen("auxiliar2","r+b");
+	if (feof(archivoAuxiliar2)) return;
 	archivoIndice=fopen(this->n_arch_indice.c_str(),"w+b");
 	archivoPrincipal=fopen(this->n_arch_principal.c_str(),"w+b");
 
-	fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+	distancia_a_padre=0;
+	idAux=0;
 
+	fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+	registroPrincipal.distancia_a_padre=distancia_a_padre;
+	registroPrincipal.id=idAux;
+	registroPrincipal.offset_proximo=0;
+
+	registroIndice.offset_al_nombre=offset; //TODO Cambiar: al offset hay que sumarle la nueva concatenación
+	registroIndice.offset_al_ppal=0;
+	registroIndice.profesion=registroAux2.profesion;
 
 	while (!feof(archivoAuxiliar2)){
 		fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
 
 
+
+
 	}
+
+	//Se agregran los offsets entre películas
 
 
 }
