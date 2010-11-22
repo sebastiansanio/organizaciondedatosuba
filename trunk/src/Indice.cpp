@@ -191,7 +191,6 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	es_ppal regRead;
 	es_ppal regBusq;
-	int offset;
 	int idBuscado;
 	bool noEncontro;
 	while(!feof(archivoAuxiliar)){
