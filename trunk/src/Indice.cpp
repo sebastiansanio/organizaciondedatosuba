@@ -60,7 +60,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	}
 	fclose(archivoAuxiliar);
 
-	//Acá hay que ordenar el archivo auxiliar por película
+	//TODO Acá hay que ordenar el archivo auxiliar por película
 
 	//Se crea la concatenación de strings de nombres de película y se asignan los offset.
 	archivoAuxiliar=fopen("auxiliar","r+b");
@@ -89,6 +89,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			fwrite(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
 		}
 		else{
+			offset=offset+sizeof(size_t)+tamAux;
 			strcpy(registroAux2.nombreDeActor,registroAux.nombreDeActor);
 			registroAux2.profesion=registroAux.profesion;
 			tamAux=strlen(registroAux.nombreDePelicula);
@@ -97,15 +98,15 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			strcpy(nombrePelicula,registroAux.nombreDePelicula);
 			fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
 			fwrite(nombrePelicula,tamAux,1,archivoDeStrings);
-			offset=offset+sizeof(size_t)+tamAux;
 			registroAux2.offsetPelicula=offset;
 			fwrite(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
 		}
 	}
+	offset=offset+sizeof(size_t)+tamAux;
 	free(nombrePelicula);
 	fclose(archivoAuxiliar2);
 
-	//Acá hay que ordenar el archivo auxiliar 2 por actor
+	//TODO Acá hay que ordenar el archivo auxiliar 2 por actor
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
 	archivoAuxiliar2=fopen("auxiliar2","r+b");
@@ -121,7 +122,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	registroPrincipal.id=idAux;
 	registroPrincipal.offset_proximo=0;
 
-	registroIndice.offset_al_nombre=offset; //TODO Cambiar: al offset hay que sumarle la nueva concatenación
+	registroIndice.offset_al_nombre=offset;
 	registroIndice.offset_al_ppal=0;
 	registroIndice.profesion=registroAux2.profesion;
 
@@ -133,7 +134,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	}
 
-	//Se agregran los offsets entre películas
+	//TODO Se agregran los offsets entre películas
 
 
 }
