@@ -25,6 +25,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	char distancia_a_padre;
 	int idAux;
 	int offset;				//Servirá como variable auxiliar para guardar offsets
+	int offsetAlPrincipal;
 	registroAuxiliar registroAux;
 	registroAuxiliar2 registroAux2;
 	size_t tamAux;	//Almacenará tamaños de cadenas de caracteres.
@@ -116,23 +117,72 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	distancia_a_padre=0;
 	idAux=0;
+	offsetAlPrincipal=0;
 
-	fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+	fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2); //Leo el archivo auxiliar
+	registroPrincipal.distancia_a_padre=distancia_a_padre;	//Es un registro de actor por lo que vale 0
+	registroPrincipal.id=idAux;	//El índice comienza con id 0
+	registroPrincipal.offset_proximo=0;	//Este campo se llenará más adelante
+	fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
+
+	distancia_a_padre=distancia_a_padre+1;
+	offsetAlPrincipal=offsetAlPrincipal+1;
+
 	registroPrincipal.distancia_a_padre=distancia_a_padre;
-	registroPrincipal.id=idAux;
-	registroPrincipal.offset_proximo=0;
+	registroPrincipal.id=registroAux2.offsetPelicula;
+	fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
 
 	registroIndice.offset_al_nombre=offset;
-	registroIndice.offset_al_ppal=0;
+	registroIndice.offset_al_ppal=offsetAlPrincipal;
 	registroIndice.profesion=registroAux2.profesion;
+	fwrite(&registroIndice,sizeof(es_indice),1,archivoIndice);
+
+	tamAux=strlen(registroAux2.nombreDeActor);
+	nombreActor=(char*)malloc(tamAux);
+	strcpy(nombreActor,registroAux2.nombreDeActor);
+	fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
+	fwrite(nombreActor,tamAux,1,archivoDeStrings);
 
 	while (!feof(archivoAuxiliar2)){
 		fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+		if (strcmp(registroAux2.nombreDeActor,nombreActor)==0){ //Mismo actor, solo guardo la película
+			distancia_a_padre=distancia_a_padre+1;
+			offsetAlPrincipal=offsetAlPrincipal+1;
+			registroPrincipal.distancia_a_padre=distancia_a_padre;
+			registroPrincipal.id=registroAux2.offsetPelicula;
+			fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
+		}
+		else{	//Otro actor
+			offset=offset+sizeof(size_t)+tamAux;
+			distancia_a_padre=0;
+			idAux=idAux+1;
+			offsetAlPrincipal=offsetAlPrincipal+1;
+			registroPrincipal.distancia_a_padre=distancia_a_padre;
+			registroPrincipal.id=idAux;
+			fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
+			distancia_a_padre=distancia_a_padre+1;
+			offsetAlPrincipal=offsetAlPrincipal+1;
+			registroPrincipal.distancia_a_padre=distancia_a_padre;
+			registroPrincipal.id=registroAux2.offsetPelicula;
+			fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
 
+			registroIndice.offset_al_nombre=offset;
+			registroIndice.offset_al_ppal=offsetAlPrincipal;
+			registroIndice.profesion=registroAux2.profesion;
+			fwrite(&registroIndice,sizeof(es_indice),1,archivoIndice);
 
-
-
+			tamAux=strlen(registroAux2.nombreDeActor);
+			free(nombreActor);
+			nombreActor=(char*)malloc(tamAux);
+			strcpy(nombreActor,registroAux2.nombreDeActor);
+			fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
+			fwrite(nombreActor,tamAux,1,archivoDeStrings);
+		}
 	}
+	fclose(archivoDeStrings);
+	fclose(archivoPrincipal);
+	fclose(archivoIndice);
+	fclose(archivoAuxiliar2);
 
 	//TODO Se agregran los offsets entre películas
 
