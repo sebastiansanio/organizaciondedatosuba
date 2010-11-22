@@ -113,7 +113,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	archivoAuxiliar2=fopen("auxiliar2","r+b");
 	if (feof(archivoAuxiliar2)) return;
 	archivoIndice=fopen(this->n_arch_indice.c_str(),"w+b");
-	archivoPrincipal=fopen(this->n_arch_principal.c_str(),"w+b");
+	archivoPrincipal=fopen("archivoPrincipalAux","w+b");
 
 	distancia_a_padre=0;
 	idAux=0;
@@ -179,14 +179,56 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			fwrite(nombreActor,tamAux,1,archivoDeStrings);
 		}
 	}
+	offsetAlPrincipal=offsetAlPrincipal+1;
 	fclose(archivoDeStrings);
 	fclose(archivoPrincipal);
 	fclose(archivoIndice);
 	fclose(archivoAuxiliar2);
 
-	//TODO Se agregran los offsets entre películas
+	//Acá se agregan los offsets entre películas
+	archivoAuxiliar=fopen("archivoPrincipalAux","r+b");
+	archivoPrincipal=fopen(this->n_arch_principal.c_str(),"w+b");
 
+	es_ppal regRead;
+	es_ppal regBusq;
+	int offset;
+	int idBuscado;
+	bool noEncontro;
+	while(!feof(archivoAuxiliar)){
 
+		fread(&regRead,sizeof(es_ppal),1,archivoAuxiliar);
+		if(regRead.distancia_a_padre!=0);
+		{
+			idBuscado=regRead.id;
+			offset=0;
+			noEncontro=false;
+			do{
+				if(feof(archivoAuxiliar)){
+					offset=offset-offsetAlPrincipal;
+					fseek(archivoAuxiliar,0,SEEK_SET);
+				}
+				else{
+					offset=offset+1;
+					fread(&regBusq,sizeof(es_ppal),1,archivoAuxiliar);
+					if(regBusq.distancia_a_padre==0){
+						if(regBusq.id==regRead.id){
+							noEncontro=true;
+							offset=0;	//No encontró la película en otro reg recorriendo tod el arch
+						}
+						else{
+							regBusq.id=-1;	//No es una película, entonces le asigno un id no válido
+
+						}
+					}
+				}
+			} while (regBusq.id!=idBuscado and noEncontro==false);
+			regRead.offset_proximo=offset;
+			fseek(archivoAuxiliar,(1-offset)*sizeof(es_ppal),SEEK_CUR); //Voy al siguiente registro
+		}													//del que estaba leyendo
+		fwrite(&regRead,sizeof(es_ppal),1,archivoPrincipal);	//Escribo el reg en el principal
+	}															//con el offset a la prox película o 0
+	fclose(archivoPrincipal);
+	fclose(archivoAuxiliar);
 }
 
 indice::indice(string nombre_arch){
