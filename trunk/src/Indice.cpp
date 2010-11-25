@@ -61,7 +61,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	}
 	fclose(archivoAuxiliar);
 
-	//TODO Acá hay que ordenar el archivo auxiliar por película
+	//Acá hay que ordenar el archivo auxiliar por película
 
 	//Se crea la concatenación de strings de nombres de película y se asignan los offset.
 	archivoAuxiliar=fopen("auxiliar","r+b");
@@ -107,7 +107,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	free(nombrePelicula);
 	fclose(archivoAuxiliar2);
 
-	//TODO Acá hay que ordenar el archivo auxiliar 2 por actor
+	//Acá hay que ordenar el archivo auxiliar 2 por actor
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
 	archivoAuxiliar2=fopen("auxiliar2","r+b");
@@ -272,7 +272,7 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 	if(!archivo_ppal)
 		return error;
 
-	fseek(archivo_ppal,staff.offset_al_ppal,SEEK_SET);
+	fseek(archivo_ppal,staff.offset_al_ppal,SEEK_CUR);
 
 	es_ppal staff_aux,pelicula;
 
@@ -325,7 +325,7 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	if(!archivo_ppal)
 		return error;
 
-	fseek(archivo_ppal,staff_in.offset_al_ppal,SEEK_SET);
+	fseek(archivo_ppal,staff_in.offset_al_ppal,SEEK_CUR);
 
 	es_ppal staff_aux,pelicula;
 
@@ -353,7 +353,7 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 
 	//vaya yendo a todos los offset al proximo hasta que vuelva al primero
 	while(staff_levantado.id!=Id_staff){
-		fseek(archivo_ppal,offset_proximo,SEEK_SET);
+		fseek(archivo_ppal,offset_proximo,SEEK_CUR);
 		fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
 		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
 		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
@@ -402,7 +402,7 @@ salidas indice::getStaff(int ID_staff,staff& staff_d){
 	if(!archivo_conc)
 		return error;
 
-	fseek(archivo_conc,staff_aux.offset_al_nombre,SEEK_SET);
+	fseek(archivo_conc,staff_aux.offset_al_nombre,SEEK_CUR);
 
 	es_conc_nom nombre;
 	fread((void*)&nombre.longitud,sizeof(nombre.longitud),1,archivo_conc);
