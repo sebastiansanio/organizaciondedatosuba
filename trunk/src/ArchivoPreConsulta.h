@@ -15,8 +15,8 @@
 using namespace std;
 
 typedef struct {
-	int padre;
 	int hijo;
+	int padre;
 	int pelicula;
 } padrePeliculaHijo;
 
@@ -32,6 +32,11 @@ private:
 public:
 	ArchivoPreConsulta(int cantActores);
 	bool agregarHijosActor(int actor,list<padrePeliculaHijo> hijos);
+	void imprimirCamino(int actorOrigen, int actorDestino);
+	void imprimirPosicionesActores();
+	list<padrePeliculaHijo> ActoresHijos(int actor);
+	padrePeliculaHijo ActorHijo(int actorOrigen, int actorDestino);
+	list<padrePeliculaHijo> CaminoActorHijo(int actorOrigen, int actorDestino);
 	virtual ~ArchivoPreConsulta();
 
 };

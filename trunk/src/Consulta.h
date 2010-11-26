@@ -20,24 +20,26 @@ typedef struct {
 	int pelicula;
 } peliculaHijo;
 
-class consulta {
+class Consulta {
 	private:
-		indice index;
-		list<string> res_consulta;
+	bool tieneArchivoPreConsulta;
+	ArchivoPreConsulta* archivo;
+		//indice index;
+		//list<string> res_consulta;
 
 	public:
-		consulta();
+		Consulta();
 
 		list<peliculaHijo> staffHijos(int staffID);
 
 		/* Calcula los grados de separación entre dos actores*/
 		list<peliculaHijo> caminoMinimoActores(int staffOrigen, int staffDestino, int gradoMax);
 
-		/* Calcula todos los actores que se encuentran en un cierto grado de
-		 * separacion*/
-		salidas actoresAGrados(int staffOrigen, int grado);
+		list<padrePeliculaHijo> actoresHijos(int staffOrigen, int gradoMax);
 
-		void imprimir();
+		bool armarArchivoPreConsulta(int gradoMax);
+
+		virtual ~Consulta();
 };
 
 #endif /* CONSULTA_H_ */
