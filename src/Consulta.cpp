@@ -1,9 +1,10 @@
 #include "Consulta.h"
 
-//consulta::consulta(){
-//}
+Consulta::Consulta(){
+	tieneArchivoPreConsulta=false;
+}
 
-list<peliculaHijo> consulta::staffHijos(int staffID){
+list<peliculaHijo> Consulta::staffHijos(int staffID){
 	list<peliculaHijo> lista;
 	peliculaHijo aux;
 	if(staffID==1){
@@ -89,7 +90,7 @@ list<peliculaHijo> consulta::staffHijos(int staffID){
 	return lista;
 }
 
-list<peliculaHijo> consulta::caminoMinimoActores(int staffOrigen, int staffDestino, int gradoMax){
+list<peliculaHijo> Consulta::caminoMinimoActores(int staffOrigen, int staffDestino, int gradoMax){
 	datosStaff tabla[CANTVERTICES];
 	for(int i=0; i<CANTVERTICES; i++){
 		tabla[i].conocido=0;
@@ -137,4 +138,60 @@ list<peliculaHijo> consulta::caminoMinimoActores(int staffOrigen, int staffDesti
 	}
 	list<peliculaHijo> listaAux;
 	return listaAux;
+}
+
+list<padrePeliculaHijo> Consulta::actoresHijos(int staffOrigen, int gradoMax){
+	datosStaff tabla[CANTVERTICES];
+	for(int i=0; i<CANTVERTICES; i++){
+		tabla[i].conocido=0;
+		tabla[i].padre=0;
+		tabla[i].pelicula=0;
+		if(i==staffOrigen){
+			tabla[i].distancia=0;
+		} else {
+			tabla[i].distancia=gradoMax+1;
+		}
+	}
+	list<peliculaHijo> verticesHijos;
+	for(int distancia=0; distancia<gradoMax; distancia++){
+		cout<<"Distancia: "<<distancia<<endl;
+		for(int vert=0; vert<CANTVERTICES; vert++){
+			if(tabla[vert].conocido==0 && tabla[vert].distancia==distancia){
+				tabla[vert].conocido=1;
+				verticesHijos=staffHijos(vert);
+				list<peliculaHijo>::iterator iter;
+				for(iter=verticesHijos.begin(); iter!=verticesHijos.end(); iter++){
+					int numero=(*iter).hijo;
+					if(tabla[numero].distancia>gradoMax){
+						tabla[numero].distancia=distancia+1;
+						tabla[numero].padre=vert;
+						tabla[numero].pelicula=(*iter).pelicula;
+					}
+				}
+			}
+		}
+	}
+	list<padrePeliculaHijo> listaAux;
+	for(int i=0;i<CANTVERTICES;i++){
+		if(tabla[i].distancia<=gradoMax){
+			padrePeliculaHijo aux;
+			aux.padre=tabla[i].padre;
+			aux.pelicula=tabla[i].pelicula;
+			aux.hijo=i;
+			listaAux.push_back(aux);
+		}
+	}
+	return listaAux;
+}
+
+bool Consulta::armarArchivoPreConsulta(int gradoMax){
+	archivo = new ArchivoPreConsulta(CANTVERTICES);
+	for(int i=1;i<=CANTVERTICES;i++){
+		if(!archivo->agregarHijosActor(i,actoresHijos(i,gradoMax))) return false;
+	}
+	tieneArchivoPreConsulta=true;
+}
+
+Consulta::~Consulta() {
+	if(tieneArchivoPreConsulta) delete archivo;
 }
