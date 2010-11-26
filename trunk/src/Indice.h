@@ -3,6 +3,7 @@
 
 #include "Parser.h"
 #include "Peliculas.h"
+#include "Ordenamiento.h"
 #include <string.h>
 #include <iostream>
 #include <stdlib.h>
@@ -28,6 +29,18 @@ struct es_ppal{
 struct es_conc_nom{
 	size_t longitud;
 	char * string;
+};
+
+//Declaración de variables y estructuras locales del constructor
+struct registroAuxiliar{
+	char nombreDeActor[100];
+	char nombreDePelicula[100];
+	char profesion;
+};
+struct registroAuxiliar2{
+	char nombreDeActor[100];
+	int offsetPelicula;
+	char profesion;
 };
 
 typedef enum {error, exito}salidas;

@@ -1,20 +1,26 @@
 #include "Indice.h"
 
+void destruir(void * stream){
+	delete (registroAuxiliar2*)stream;
+}
 
+void persistir(ofstream& stream, void* elemento){
+	stream.write((char*)elemento,sizeof(registroAuxiliar2));
+}
+
+int comparar(void * elemento1, void * elemento2){
+	registroAuxiliar2 * registro1=(registroAuxiliar2*)elemento1;
+	registroAuxiliar2 * registro2=(registroAuxiliar2*)elemento2;
+	return strcmp(registro1->nombreDeActor,registro2->nombreDeActor);
+}
+
+void * construir(char * stream){
+	registroAuxiliar2* registro=new registroAuxiliar2;
+	memcpy((void*)registro,(void*)stream,sizeof(registroAuxiliar2));
+	return (void*)registro;
+}
 
 indice::indice(list<string>& listaDeArchivos,string nombre_arch){
-	//Declaración de variables y estructuras locales
-	struct registroAuxiliar{
-		char nombreDeActor[100];
-		char nombreDePelicula[100];
-		char profesion;
-	};
-	struct registroAuxiliar2{
-		char nombreDeActor[100];
-		int offsetPelicula;
-		char profesion;
-	};
-
 	FILE * archivoDeStrings; //Archivo de concatenación de strings
 	FILE * archivoIndice;
 	FILE * archivoPrincipal;
@@ -108,6 +114,9 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	fclose(archivoAuxiliar2);
 
 	//Acá hay que ordenar el archivo auxiliar 2 por actor
+
+		replac_selection metodo_ordenamiento(50,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
+		metodo_ordenamiento.ordenar(string("auxiliar2"));
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
 	archivoAuxiliar2=fopen("auxiliar2","r+b");
