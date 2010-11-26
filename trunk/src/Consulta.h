@@ -23,7 +23,7 @@ typedef struct {
 class Consulta {
 	private:
 	bool tieneArchivoPreConsulta;
-	ArchivoPreConsulta* archivo;
+	ArchivoPreConsulta* archivoConsulta;
 		//indice index;
 		//list<string> res_consulta;
 
@@ -38,6 +38,8 @@ class Consulta {
 		list<padrePeliculaHijo> actoresHijos(int staffOrigen, int gradoMax);
 
 		bool armarArchivoPreConsulta(int gradoMax);
+
+		void imprimirCaminoMinimoActores(int actorOrigen, int actorDestino);
 
 		virtual ~Consulta();
 };

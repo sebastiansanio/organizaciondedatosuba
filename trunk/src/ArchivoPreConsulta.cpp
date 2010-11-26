@@ -77,7 +77,7 @@ list<padrePeliculaHijo> ArchivoPreConsulta::CaminoActorHijo(int actorOrigen, int
 	padrePeliculaHijo caminoActor;
 	list<padrePeliculaHijo> listaCamino;
 	while(actor!=actorOrigen){
-		caminoActor=ActorHijo(actorOrigen,actorDestino);
+		caminoActor=ActorHijo(actorOrigen,actor);
 		listaCamino.push_back(caminoActor);
 		actor=caminoActor.padre;
 	}
