@@ -185,13 +185,31 @@ list<padrePeliculaHijo> Consulta::actoresHijos(int staffOrigen, int gradoMax){
 }
 
 bool Consulta::armarArchivoPreConsulta(int gradoMax){
-	archivo = new ArchivoPreConsulta(CANTVERTICES);
+	this->archivoConsulta = new ArchivoPreConsulta(CANTVERTICES);
 	for(int i=1;i<=CANTVERTICES;i++){
-		if(!archivo->agregarHijosActor(i,actoresHijos(i,gradoMax))) return false;
+		if(!archivoConsulta->agregarHijosActor(i,actoresHijos(i,gradoMax))) return false;
 	}
 	tieneArchivoPreConsulta=true;
 }
 
+void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
+	if(tieneArchivoPreConsulta){
+		list<padrePeliculaHijo> lista = this->archivoConsulta->CaminoActorHijo(actorOrigen,actorDestino);
+		list<padrePeliculaHijo>::iterator iter = lista.begin();
+		while(iter!=lista.end()){
+			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << endl;
+			iter++;
+		}
+	} else {
+		list<peliculaHijo> lista= caminoMinimoActores(actorOrigen,actorDestino,6);
+		list<peliculaHijo>::iterator iter = lista.begin();
+		while(iter!=lista.end()){
+			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << endl;
+			iter++;
+		}
+	}
+}
+
 Consulta::~Consulta() {
-	if(tieneArchivoPreConsulta) delete archivo;
+	if(tieneArchivoPreConsulta) delete archivoConsulta;
 }
