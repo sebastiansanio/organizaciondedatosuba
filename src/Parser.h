@@ -9,15 +9,25 @@
 #define PARSER_H_
 
 #include "Peliculas.h"
+#include <stdio.h>
+#include <string.h>
+#include <string>
+#include <iostream>
+#include <list>
+#include <sstream>
+#include <cstdlib>
+#include <fstream>
+#include <stdlib.h>
 
 class parser{
 	private:
-
+	ifstream* archivoPeliculas;
+	list<pelicula>* listaPeliculas;
 
 	public:
-		parser(const char* nombre);
-		int getPelicula (pelicula&);
-
+	parser(const char* nombre);
+	list<pelicula>* getPeliculasDeArchivo();
+	virtual ~parser();
 
 };
 

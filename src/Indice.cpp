@@ -33,7 +33,8 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	pelicula* peli;
 	char *nombrePelicula;
 	char *nombreActor;
-	list<staff> listaStaff;
+	list<pelicula>* listaPelicula;
+	list<staff>* listaStaff;
 	list<string>::iterator it=listaDeArchivos.begin();
 	this->n_arch_indice=nombre_arch + ".idx";
 	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
@@ -45,16 +46,18 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	archivoAuxiliar=fopen("auxiliar","w+b");
 	while (it!=listaDeArchivos.end()){
 		prs = new parser((it->c_str()));
-		while(!(prs->getPelicula(*peli))){
+//		while(!(prs->getPelicula(*peli))){
 			strcpy(registroAux.nombreDePelicula,(peli->getNombre()).c_str());
-			listaStaff=peli->getStaff();
-			list<staff>::iterator itStaff=listaStaff.begin();
-			while(itStaff!=listaStaff.end()){
-				strcpy(registroAux.nombreDeActor,(itStaff->getNombre()));
-				registroAux.profesion=itStaff->getProfesion();
-				fwrite(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
-				itStaff++;
-			}
+			listaPelicula=prs->getPeliculasDeArchivo();
+			list<pelicula>::iterator itPelicula=listaPelicula->begin();
+			while(itPelicula!=listaPelicula->end()){
+				//Falta otro while dentro de cada pelicula
+
+//				strcpy(registroAux.nombreDeActor,(itStaff->getNombre()));
+//				registroAux.profesion=itStaff->getProfesion();
+//				fwrite(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+				itPelicula++;
+//			}
 		}
 		delete prs;
 		it++;
