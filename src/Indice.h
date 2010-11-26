@@ -26,7 +26,7 @@ struct es_ppal{
 };
 
 struct es_conc_nom{
-	int longitud;
+	size_t longitud;
 	char * string;
 };
 
@@ -56,7 +56,7 @@ class indice{
 		string n_arch_indice;
 		string n_arch_principal;
 		string n_arch_conc_string;
-		long int cantidad_staff; //para la busqueda binaria
+		int cantidad_staff; //para la busqueda binaria
 
 	public:
 

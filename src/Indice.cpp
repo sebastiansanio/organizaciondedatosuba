@@ -5,8 +5,8 @@
 indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	//Declaración de variables y estructuras locales
 	struct registroAuxiliar{
-		char* nombreDeActor;
-		char* nombreDePelicula;
+		char nombreDeActor[100];
+		char nombreDePelicula[100];
 		char profesion;
 	};
 	struct registroAuxiliar2{
@@ -30,10 +30,9 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	registroAuxiliar2 registroAux2;
 	size_t tamAux;	//Almacenará tamaños de cadenas de caracteres.
 	parser* prs;
-	pelicula* peli;
 	char *nombrePelicula;
 	char *nombreActor;
-	list<pelicula>* listaPelicula;
+	list<pelicula>* peliculasArchivo;
 	list<staff>* listaStaff;
 	list<string>::iterator it=listaDeArchivos.begin();
 	this->n_arch_indice=nombre_arch + ".idx";
@@ -41,37 +40,35 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	this->n_arch_principal=nombre_arch + "p" + ".ppal";
 
 	//En esta primera etapa se crea un archivo auxiliar con registros de la forma
-	// Nombre de actor|nombre de película|Profesión
+	//Nombre de actor|nombre de película|Profesión
 	//El tamaño de los registros es de tamaño fijo.
 	archivoAuxiliar=fopen("auxiliar","w+b");
 	while (it!=listaDeArchivos.end()){
 		prs = new parser((it->c_str()));
-//		while(!(prs->getPelicula(*peli))){
-			strcpy(registroAux.nombreDePelicula,(peli->getNombre()).c_str());
-			listaPelicula=prs->getPeliculasDeArchivo();
-			list<pelicula>::iterator itPelicula=listaPelicula->begin();
-			while(itPelicula!=listaPelicula->end()){
-				//Falta otro while dentro de cada pelicula
-
-//				strcpy(registroAux.nombreDeActor,(itStaff->getNombre()));
-//				registroAux.profesion=itStaff->getProfesion();
-//				fwrite(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
-				itPelicula++;
-//			}
+		peliculasArchivo=prs->getPeliculasDeArchivo();
+		list<pelicula>::iterator iteradorPelicula=peliculasArchivo->begin();
+		while(iteradorPelicula!=peliculasArchivo->end()){
+			strcpy(registroAux.nombreDePelicula,(iteradorPelicula->getNombre()).c_str());
+			listaStaff=iteradorPelicula->getStaff();
+			list<staff>::iterator iteradorStaff=listaStaff->begin();
+			while(iteradorStaff!=listaStaff->end()){
+				strcpy(registroAux.nombreDeActor,(iteradorStaff->getNombre()));
+				registroAux.profesion=(iteradorStaff->getProfesion());
+				fwrite(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+				iteradorStaff++;
+			}
+			iteradorPelicula++;
 		}
 		delete prs;
 		it++;
 	}
 	fclose(archivoAuxiliar);
 
-	//Acá hay que ordenar el archivo auxiliar por película
-
 	//Se crea la concatenación de strings de nombres de película y se asignan los offset.
 	archivoAuxiliar=fopen("auxiliar","r+b");
 	if (feof(archivoAuxiliar)) return;
 	archivoDeStrings=fopen(this->n_arch_conc_string.c_str(),"w+b");
 	archivoAuxiliar2=fopen("auxiliar2","w+b");
-
 	offset=0;
 	fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
 	strcpy(registroAux2.nombreDeActor,registroAux.nombreDeActor);
@@ -126,20 +123,24 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	registroPrincipal.distancia_a_padre=distancia_a_padre;	//Es un registro de actor por lo que vale 0
 	registroPrincipal.id=idAux;	//El índice comienza con id 0
 	registroPrincipal.offset_proximo=0;	//Este campo se llenará más adelante
-	fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
+	fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);//Guardamos en el archivo ppal lo extraido
 
 	distancia_a_padre=distancia_a_padre+1;
-	offsetAlPrincipal=offsetAlPrincipal+1;
 
+	//Guardamos la primer pelicula
 	registroPrincipal.distancia_a_padre=distancia_a_padre;
 	registroPrincipal.id=registroAux2.offsetPelicula;
 	fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
 
+	//Guardamos en el indice el primer actor
 	registroIndice.offset_al_nombre=offset;
 	registroIndice.offset_al_ppal=offsetAlPrincipal;
 	registroIndice.profesion=registroAux2.profesion;
 	fwrite(&registroIndice,sizeof(es_indice),1,archivoIndice);
 
+	offsetAlPrincipal=offsetAlPrincipal+1;
+
+	//Concatenamos el nombre del actor
 	tamAux=strlen(registroAux2.nombreDeActor);
 	nombreActor=(char*)malloc(tamAux);
 	strcpy(nombreActor,registroAux2.nombreDeActor);
@@ -160,20 +161,27 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			distancia_a_padre=0;
 			idAux=idAux+1;
 			offsetAlPrincipal=offsetAlPrincipal+1;
+
+			//Guarda el actor en el ppal
 			registroPrincipal.distancia_a_padre=distancia_a_padre;
 			registroPrincipal.id=idAux;
 			fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
+
+			//Guarda la 1er pelicula en el ppal
 			distancia_a_padre=distancia_a_padre+1;
-			offsetAlPrincipal=offsetAlPrincipal+1;
 			registroPrincipal.distancia_a_padre=distancia_a_padre;
 			registroPrincipal.id=registroAux2.offsetPelicula;
 			fwrite(&registroPrincipal,sizeof(es_ppal),1,archivoPrincipal);
 
+			//Guarda el actor en el indice
 			registroIndice.offset_al_nombre=offset;
 			registroIndice.offset_al_ppal=offsetAlPrincipal;
 			registroIndice.profesion=registroAux2.profesion;
 			fwrite(&registroIndice,sizeof(es_indice),1,archivoIndice);
 
+			offsetAlPrincipal=offsetAlPrincipal+1;
+
+			//Guarda el nombre en el archivo de concatenacion
 			tamAux=strlen(registroAux2.nombreDeActor);
 			free(nombreActor);
 			nombreActor=(char*)malloc(tamAux);
@@ -195,35 +203,22 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	es_ppal regRead;
 	es_ppal regBusq;
 	int idBuscado;
-	bool noEncontro;
 	while(!feof(archivoAuxiliar)){
-
 		fread(&regRead,sizeof(es_ppal),1,archivoAuxiliar);
-		if(regRead.distancia_a_padre!=0);
-		{
+		if(regRead.distancia_a_padre!=0){
 			idBuscado=regRead.id;
 			offset=0;
-			noEncontro=false;
 			do{
 				if(feof(archivoAuxiliar)){
 					offset=offset-offsetAlPrincipal;
 					fseek(archivoAuxiliar,0,SEEK_SET);
 				}
-				else{
-					offset=offset+1;
-					fread(&regBusq,sizeof(es_ppal),1,archivoAuxiliar);
-					if(regBusq.distancia_a_padre==0){
-						if(regBusq.id==regRead.id){
-							noEncontro=true;
-							offset=0;	//No encontró la película en otro reg recorriendo tod el arch
-						}
-						else{
-							regBusq.id=-1;	//No es una película, entonces le asigno un id no válido
-
-						}
-					}
+				offset=offset+1;
+				fread(&regBusq,sizeof(es_ppal),1,archivoAuxiliar);
+				if(regBusq.distancia_a_padre==0){
+					regBusq.id=-1;	//No es una película, entonces le asigno un id no válido
 				}
-			} while (regBusq.id!=idBuscado and noEncontro==false);
+			} while (regBusq.id!=idBuscado);
 			regRead.offset_proximo=offset;
 			fseek(archivoAuxiliar,(1-offset)*sizeof(es_ppal),SEEK_CUR); //Voy al siguiente registro
 		}													//del que estaba leyendo
@@ -238,16 +233,53 @@ indice::indice(string nombre_arch){
 	this->n_arch_conc_string=nombre_arch + "c" + ".conc";
 	this->n_arch_principal=nombre_arch + "p" + ".ppal";
 
-
-
-	//falta ver como recuperamos cuantos actores tiene el indice
+	//Recuperamos cantidad de staff
+	FILE * archivo=fopen(this->n_arch_indice.c_str(),"r+b");
+	fseek(archivo,0,SEEK_END);
+	long int offset=ftell(archivo);
+	fseek(archivo,0,SEEK_SET);
+	this->cantidad_staff=offset/sizeof(es_indice) -1;
 }
 
 salidas indice::getID_staff(const string& nombre, int& id){
 
 	//se realizaria la busqueda binaria en el indice con el nombre obtenido y se devuelve el offset en el indice mediante id y se retorna exito. Si no se encuentra se retorna error
-
-	return error;
+	es_indice registro;
+	FILE * archivo=fopen(this->n_arch_indice.c_str(),"r+b");
+	FILE * archivo_nombres=fopen(this->n_arch_conc_string.c_str(),"r+b");
+	char * nombreAux;
+	size_t tamAux;
+	int inicio=0;
+	int final=this->cantidad_staff;
+	int medio=final/2;
+	while(true){
+		fseek(archivo,medio*sizeof(es_indice),SEEK_SET);
+		fread(&registro,sizeof(es_indice),1,archivo);
+		fseek(archivo_nombres,registro.offset_al_nombre,SEEK_SET);
+		fread(&tamAux,sizeof(size_t),1,archivo_nombres);
+		nombreAux=new char[tamAux];
+		fread(nombreAux,tamAux,1,archivo_nombres);
+		if(inicio>final){
+			delete []nombreAux;
+			fclose(archivo);
+			fclose(archivo_nombres);
+			return error;
+		}
+		if(strcmp(nombreAux,nombre.c_str())==0){
+			id=medio;
+			delete []nombreAux;
+			fclose(archivo);
+			fclose(archivo_nombres);
+			return exito;
+		}else if(strcmp(nombreAux,nombre.c_str())<0){
+			inicio=medio + 1;
+			medio=(final + inicio)/2;
+		}else{
+			final=medio - 1;
+			medio=(final + inicio)/2;
+		}
+		delete []nombreAux;
+	}
 }
 
 salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
@@ -258,10 +290,10 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 	FILE * archivo_indice;
 	archivo_indice = fopen(this->n_arch_indice.c_str(),"r+b");
 
-	if((!archivo_indice)or(ID_staff>this->cantidad_staff*sizeof(es_indice)))
+	if((!archivo_indice)or(ID_staff>this->cantidad_staff))
 		return error;
 
-	fseek(archivo_indice,ID_staff,SEEK_SET);
+	fseek(archivo_indice,ID_staff*sizeof(es_indice),SEEK_SET);
 
 	es_indice staff;
 
@@ -275,10 +307,11 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 	if(!archivo_ppal)
 		return error;
 
-	fseek(archivo_ppal,staff.offset_al_ppal,SEEK_CUR);
+	fseek(archivo_ppal,staff.offset_al_ppal*sizeof(es_ppal),SEEK_SET);
 
 	es_ppal staff_aux,pelicula;
 
+	//Leo el actor
 	fread((void*)&staff_aux.distancia_a_padre,sizeof(staff_aux.distancia_a_padre),1,archivo_ppal);
 	fread((void*)&staff_aux.id,sizeof(staff_aux.id),1,archivo_ppal);
 	fread((void*)&staff_aux.offset_proximo,sizeof(staff_aux.offset_proximo),1,archivo_ppal);
@@ -286,6 +319,7 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 	if(staff_aux.distancia_a_padre!=0)
 		return error;//porque quiere decir que no empezo levantando el actor por lo que esta mal
 
+	//Leo la pelicula
 	fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
 	fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
 	fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
@@ -311,10 +345,10 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	FILE * archivo_indice;
 	archivo_indice = fopen(this->n_arch_indice.c_str(),"r+b");
 
-	if((!archivo_indice)or(Id_staff>this->cantidad_staff*sizeof(es_indice)))
+	if((!archivo_indice)or(Id_staff>this->cantidad_staff))
 		return error;
 
-	fseek(archivo_indice,Id_staff,SEEK_SET);
+	fseek(archivo_indice,Id_staff*sizeof(es_indice),SEEK_SET);
 
 	es_indice staff_in;
 
@@ -328,10 +362,11 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	if(!archivo_ppal)
 		return error;
 
-	fseek(archivo_ppal,staff_in.offset_al_ppal,SEEK_CUR);
+	fseek(archivo_ppal,staff_in.offset_al_ppal*sizeof(es_ppal),SEEK_SET);
 
 	es_ppal staff_aux,pelicula;
 
+	//Leo el actor en el ppal
 	fread((void*)&staff_aux.distancia_a_padre,sizeof(staff_aux.distancia_a_padre),1,archivo_ppal);
 	fread((void*)&staff_aux.id,sizeof(staff_aux.id),1,archivo_ppal);
 	fread((void*)&staff_aux.offset_proximo,sizeof(staff_aux.offset_proximo),1,archivo_ppal);
@@ -339,10 +374,12 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	if((staff_aux.distancia_a_padre!=0)or(staff_aux.id!=Id_staff))
 		return error;//porque quiere decir que no empezo levantando el actor por lo que esta mal o que no es el id del staff realmente buscado
 
+	//Leo la primer pelicula del actor
 	fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
 	fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
 	fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
 
+	//Busco la pelicula en ese actor
 	while(pelicula.id!=ID_pelicula){
 		if(feof(archivo_ppal)) return error;
 		fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
@@ -352,8 +389,8 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	}
 
 	es_ppal staff_levantado;
-	int offset_proximo=pelicula.offset_proximo;
-
+	int offset_proximo=pelicula.offset_proximo*sizeof(es_ppal);
+	char distancia_padre_aux;
 	//vaya yendo a todos los offset al proximo hasta que vuelva al primero
 	while(staff_levantado.id!=Id_staff){
 		fseek(archivo_ppal,offset_proximo,SEEK_CUR);
@@ -361,9 +398,11 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
 		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
 
-		fseek(archivo_ppal,offset_proximo - (int)pelicula.distancia_a_padre,SEEK_SET);
-		fread((void*)&staff_levantado.distancia_a_padre,sizeof(staff_levantado.distancia_a_padre),1,archivo_ppal);
-		fread((void*)&staff_levantado.id,sizeof(staff_levantado.id),1,archivo_ppal);
+		distancia_padre_aux=pelicula.distancia_a_padre;
+		fseek(archivo_ppal,-pelicula.distancia_a_padre*sizeof(es_ppal),SEEK_CUR);
+		fread((void*)&staff_levantado,sizeof(staff_levantado),1,archivo_ppal);
+
+		fseek(archivo_ppal,(distancia_padre_aux-1)*sizeof(es_ppal),SEEK_CUR);
 
 		if(staff_levantado.distancia_a_padre!=0)
 			return error;//quiere decir que no llego a un id de actor
@@ -371,7 +410,7 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 		if(staff_levantado.id!=Id_staff)
 			ID_staff.push_front(staff_levantado.id);
 
-		offset_proximo=pelicula.offset_proximo;
+		offset_proximo=pelicula.offset_proximo*sizeof(es_ppal);
 
 	}
 
@@ -388,10 +427,10 @@ salidas indice::getStaff(int ID_staff,staff& staff_d){
 	FILE * archivo_indice;
 	archivo_indice = fopen(this->n_arch_indice.c_str(),"r+b");
 
-	if((!archivo_indice)or(ID_staff>this->cantidad_staff*sizeof(es_indice)))
+	if((!archivo_indice)or(ID_staff>this->cantidad_staff))
 		return error;
 
-	fseek(archivo_indice,ID_staff,SEEK_SET);
+	fseek(archivo_indice,ID_staff*sizeof(es_indice),SEEK_SET);
 
 	es_indice staff_aux;
 
@@ -405,7 +444,7 @@ salidas indice::getStaff(int ID_staff,staff& staff_d){
 	if(!archivo_conc)
 		return error;
 
-	fseek(archivo_conc,staff_aux.offset_al_nombre,SEEK_CUR);
+	fseek(archivo_conc,staff_aux.offset_al_nombre,SEEK_SET);
 
 	es_conc_nom nombre;
 	fread((void*)&nombre.longitud,sizeof(nombre.longitud),1,archivo_conc);
