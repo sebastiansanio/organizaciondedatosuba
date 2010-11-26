@@ -1,17 +1,22 @@
 #include "Peliculas.h"
 
-pelicula::pelicula(string,int){
-
+pelicula::pelicula(string nombre ,int cantStaff){
+	this->nombre = nombre;
+	this->cantStaff = cantStaff;
 }
 
 string pelicula::getNombre(){
-
+	return this->nombre;
 }
 
-void pelicula::addStaff(staff){
-
+void pelicula::setStaff(list<staff>* listaStaff){
+	this->listaStaff = listaStaff;
 }
 
-list<staff> pelicula::getStaff(){
+void pelicula::addStaff(staff staffAgregar){
+	this->listaStaff->push_back(staffAgregar);
+}
 
+list<staff>* pelicula::getStaff(){
+	return this->listaStaff;
 }

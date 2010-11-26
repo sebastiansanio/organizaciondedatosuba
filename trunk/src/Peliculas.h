@@ -31,13 +31,14 @@ class pelicula {
 	private:
 		int cantStaff;
 		string nombre;
-		list<staff> listaStaff;
+		list<staff>* listaStaff;
 
 	public:
 		pelicula(string,int);
 		string getNombre();
 		void addStaff(staff);
-		list<staff> getStaff();
+		void setStaff(list<staff>* listaStaff);
+		list<staff>* getStaff();
 };
 
 
