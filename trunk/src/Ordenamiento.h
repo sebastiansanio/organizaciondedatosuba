@@ -30,7 +30,7 @@ class replac_selection {
 
 	private:
 		int dataTam;//para saber de que tamaño es el stream
-		int buffTam;
+		int buffTam;//para saber la cantidad de registros q se van a almacenar en memoria para luego ordenar
 
 		/*Recibe un stream, retorna un puntero al elemento*/
 		void* (*constructor)(char*);

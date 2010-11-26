@@ -1,4 +1,4 @@
-
+#include <stdlib.h>
 #include "Ordenamiento.h"
 
 replac_selection::replac_selection(int buffTam, int dataTam,void* (*constructor)(char*),
@@ -51,26 +51,30 @@ void replac_selection::ordenar (const string& arch_e) {
 	cout << n_arch << endl;
 	salida.open (n_arch.c_str(), ios::out | ios::binary);
 
+	char stream [dataTam+1];
+	entrada.read(stream,dataTam); // obtiene un char* del tamaño del elemento
+
 		while (!entrada.eof() || cantElem != 0  ){
 
 			if(cantCong == cantElem ) {// si se debe iniciar otra particion
 				stringstream ss1;
 				salida.close();
 				contArch++;
+				if (contArch > 15) exit(0);
 				ss1 << "Temp_" << arch_e << contArch << ".bin";
 				ss1 >> n_arch;
 				cout << n_arch << endl;
+
 				salida.open(n_arch.c_str(), ios::out | ios::binary);
 				descongelarElem(buffTam);
 				cantCong = 0;
 			}
 
 			aux = NULL;
-			char stream [dataTam+1];
-			entrada.read(stream,dataTam); // obtiene un char* del tamaño del elemento
+
 
 			stream [dataTam]= '\0';
-			if (entrada.good())
+			if (!entrada.eof())
 				aux = constructor (stream);
 
 			posMin = elemMasPequenio(buffTam);
@@ -78,6 +82,12 @@ void replac_selection::ordenar (const string& arch_e) {
 			//TODO ESTO HAY QUE BORRARLO <<<<<
 			int k;
 			cout << "\nVECTOR" << endl;
+			if (!entrada.eof()) {
+				int nro = atoi(stream);
+				cout << "Numero para insertar: " << nro << endl;
+			}
+			else
+				cout << "no hay mas numeros" << endl;
 			for (int q =0 ; q < buffTam ; q++) {
 				if ( v_elem [q].est != vacio)
 					k = *((int *) v_elem [q].elem);
@@ -109,6 +119,9 @@ void replac_selection::ordenar (const string& arch_e) {
 				}
 			}
 			destructor(min);
+			entrada.read(stream,dataTam); // obtiene un char* del tamaño del elemento
+
+
 
 		}//while
 
@@ -166,16 +179,21 @@ int replac_selection::completarArray(ifstream& e) {
 
 	int cantElem = 0;
 
-	while (!e.eof() && cantElem < buffTam){
-		char  stream [dataTam+1];
-		e.read(stream,dataTam);
+	char  stream [dataTam+1];
+
+
+
+
+	while ( cantElem < buffTam && e.read(stream,dataTam)){
 
 		stream [dataTam]= '\0';
 		v_elem [cantElem].elem = constructor (stream);
 		v_elem [cantElem].est = ocupado;
 		cantElem ++;
 
+
 	}
+	cout << "sale con el numero " << atoi(stream) << endl;
 
 	return cantElem;
 }
