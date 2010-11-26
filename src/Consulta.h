@@ -2,6 +2,7 @@
 #define CONSULTA_H_
 
 #include "Indice.h"
+#include "ArchivoPreConsulta.h"
 
 using namespace std;
 
