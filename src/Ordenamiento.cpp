@@ -28,7 +28,7 @@ void replac_selection::ordenar (const string& arch_e) {
 	stringstream ss;
 	ifstream entrada;
 	ofstream salida;
-	string n_arch = arch_e + ".bin";
+	string n_arch = arch_e;
 	entrada.open(n_arch.c_str(), ios::in | ios::binary);
 
 	if (!entrada.is_open()){
