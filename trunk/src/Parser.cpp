@@ -37,7 +37,7 @@ list<pelicula>* parser::getPeliculasDeArchivo() {
 //			cout << "nombre: " << buffer << endl;
 			nombre = buffer;
 			buffer = strtok(NULL, "<>");
-
+			listaStaff->clear();
 			while ((strcmp(buffer, "/film") != 0)) {
 				if (strcmp(buffer, "director") == 0) {
 					buffer = strtok(NULL, "/");
@@ -46,7 +46,8 @@ list<pelicula>* parser::getPeliculasDeArchivo() {
 					buffer = strtok(NULL, "/<");
 					cantStaff++;
 //					cout << "D: " << buffer << endl;
-					listaStaff->push_back(staff(buffer,'D'));
+					staff dir = staff(buffer,'D');
+					listaStaff->push_back(dir);
 				} else if (strcmp(buffer, "writer") == 0) {
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/");
@@ -54,7 +55,8 @@ list<pelicula>* parser::getPeliculasDeArchivo() {
 					buffer = strtok(NULL, "/<");
 					cantStaff++;
 //					cout << "W: " << buffer << endl;
-					listaStaff->push_back(staff(buffer,'W'));
+					staff wri = staff(buffer,'W');
+					listaStaff->push_back(wri);
 				} else if (strcmp(buffer, "actor") == 0) {
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/");
@@ -62,7 +64,8 @@ list<pelicula>* parser::getPeliculasDeArchivo() {
 					buffer = strtok(NULL, "/<");
 					cantStaff++;
 //					cout << "A: " << buffer << endl;
-					listaStaff->push_back(staff(buffer,'A'));
+					staff act = staff(buffer,'A');
+					listaStaff->push_back(act);
 				}
 				buffer = strtok(NULL, "<>");
 			}
