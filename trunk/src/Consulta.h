@@ -10,7 +10,7 @@ using namespace std;
 
 typedef struct {
 	bool conocido;
-	int distancia;
+	char distancia;
 	int padre;
 	int pelicula;
 } datosStaff;
@@ -24,11 +24,12 @@ class Consulta {
 	private:
 	bool tieneArchivoPreConsulta;
 	ArchivoPreConsulta* archivoConsulta;
+	bool armarArchivoPreConsulta(int gradoMax);
 		//indice index;
 		//list<string> res_consulta;
 
 	public:
-		Consulta();
+		Consulta(bool preConsulta);
 
 		list<peliculaHijo> staffHijos(int staffID);
 
@@ -36,8 +37,6 @@ class Consulta {
 		list<peliculaHijo> caminoMinimoActores(int staffOrigen, int staffDestino, int gradoMax);
 
 		list<padrePeliculaHijo> actoresHijos(int staffOrigen, int gradoMax);
-
-		bool armarArchivoPreConsulta(int gradoMax);
 
 		void imprimirCaminoMinimoActores(int actorOrigen, int actorDestino);
 
