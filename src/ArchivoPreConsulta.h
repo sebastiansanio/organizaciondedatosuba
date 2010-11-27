@@ -38,7 +38,7 @@ public:
 	bool agregarHijosActor(int actor,list<padrePeliculaHijo> hijos);
 	void imprimirCamino(int actorOrigen, int actorDestino);
 	void imprimirPosicionesActores();
-	list<padrePeliculaHijo> ActoresHijos(int actor);
+	list<padrePeliculaHijo> ActoresHijosADistancia(int actor, char distancia);
 	padrePeliculaHijo ActorHijo(int actorOrigen, int actorDestino);
 	list<padrePeliculaHijo> CaminoActorHijo(int actorOrigen, int actorDestino);
 	virtual ~ArchivoPreConsulta();

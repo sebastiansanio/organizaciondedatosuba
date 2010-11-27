@@ -40,6 +40,8 @@ class Consulta {
 
 		void imprimirCaminoMinimoActores(int actorOrigen, int actorDestino);
 
+		void imprimirActoresADistancia(int actorOrigen, char distancia);
+
 		virtual ~Consulta();
 };
 
