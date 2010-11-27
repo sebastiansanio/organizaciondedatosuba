@@ -210,7 +210,7 @@ void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
 		list<padrePeliculaHijo> lista = this->archivoConsulta->CaminoActorHijo(actorOrigen,actorDestino);
 		list<padrePeliculaHijo>::iterator iter = lista.begin();
 		while(iter!=lista.end()){
-			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << " Distancia " << (*iter).distancia << endl;
+			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << endl;
 			iter++;
 		}
 	} else {
@@ -218,6 +218,17 @@ void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
 		list<peliculaHijo>::iterator iter = lista.begin();
 		while(iter!=lista.end()){
 			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << endl;
+			iter++;
+		}
+	}
+}
+
+void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
+	if(tieneArchivoPreConsulta){
+		list<padrePeliculaHijo> lista = this->archivoConsulta->ActoresHijosADistancia(actorOrigen,distancia);
+		list<padrePeliculaHijo>::iterator iter = lista.begin();
+		while(iter!=lista.end()){
+			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << " Distancia " << (int)(*iter).distancia << endl;
 			iter++;
 		}
 	}

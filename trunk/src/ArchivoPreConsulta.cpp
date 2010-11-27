@@ -97,7 +97,7 @@ list<padrePeliculaHijo> ArchivoPreConsulta::CaminoActorHijo(int actorOrigen, int
 	return listaCamino;
 }
 
-list<padrePeliculaHijo> ArchivoPreConsulta::ActoresHijos(int actor){
+list<padrePeliculaHijo> ArchivoPreConsulta::ActoresHijosADistancia(int actor, char distancia){
 	int posicionActor;
 	int posicionActorSiguiente;
 	archivo->seekg((actor-1)*4,ios::beg);
@@ -108,7 +108,7 @@ list<padrePeliculaHijo> ArchivoPreConsulta::ActoresHijos(int actor){
 	while(archivo->tellg()<posicionActorSiguiente){
 		padrePeliculaHijo aux;
 		archivo->read((char*)&aux,sizeof(padrePeliculaHijo));
-		lista.push_back(aux);
+		if(aux.distancia==distancia) lista.push_back(aux);
 	}
 	archivo->seekg(0,ios::end);
 	return lista;
