@@ -18,27 +18,28 @@ using namespace std;
 class staff {
 	private:
 		char profesion;
-		char * nombre;
-
+		string nombre;
 	public:
-		staff(char *nomb,char prof){this->profesion=prof;this->nombre=nomb;}
+		staff(string nomb,char prof){this->profesion=prof;this->nombre=nomb;}
 		char getProfesion (){return profesion;}
-		char* getNombre(){return nombre;}
+		string getNombre(){return nombre;}
 
 };
 
 class pelicula {
-	private:
+private:
 		int cantStaff;
 		string nombre;
-		list<staff>* listaStaff;
+		list<staff*>* listaStaff;
 
 	public:
-		pelicula(string,int);
+		pelicula(){}
+		pelicula(string nombre ,int cantStaff);
 		string getNombre();
-		void addStaff(staff);
-		void setStaff(list<staff>* listaStaff);
-		list<staff>* getStaff();
+		void addStaff(staff* staff);
+		void setCantStaff(int cantStaff);
+		list<staff*>* getStaff();
+		~pelicula(){delete listaStaff;}
 };
 
 

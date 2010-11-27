@@ -4,7 +4,7 @@ parser::parser(const char* nombre) {
 	this->archivoPeliculas = new ifstream(nombre);
 }
 
-list<pelicula>* parser::getPeliculasDeArchivo() {
+list<pelicula*> parser::getPeliculasDeArchivo() {
 
 	string* cadenaArchivo = new string;
 	string* xml = new string;
@@ -18,26 +18,23 @@ list<pelicula>* parser::getPeliculasDeArchivo() {
 
 	int cantStaff = 0;
 	char* nombre;
-//	char* nombreStaff;
-//	char profesion;
-	list<pelicula>* listaPeliculas = new list<pelicula>();
-	list<staff>* listaStaff = new list<staff> ();
+	char profesion;
+	list<pelicula*> listaPeliculas;// = new list<pelicula>();
 
 	char* buffer = strtok(xmlAux, "<>");
-	while (strcmp(buffer, "/films") != 0 and buffer!=NULL) {
+	while (strcmp(buffer, "/films") != 0 and buffer != NULL) {
 		if (strcmp(buffer, "film") == 0) {
 			while (strcmp(buffer, "id") != 0) {
 				buffer = strtok(NULL, "<>");
 			}
-			cantStaff = 0;
 			buffer = strtok(NULL, "/");
 			buffer = strtok(NULL, "/");
 			buffer = strtok(NULL, "/");
 			buffer = strtok(NULL, "/<");
-//			cout << "nombre: " << buffer << endl;
 			nombre = buffer;
+			cantStaff = 0;
 			buffer = strtok(NULL, "<>");
-			listaStaff->clear();
+			pelicula* peli = new pelicula(nombre, cantStaff);
 			while ((strcmp(buffer, "/film") != 0)) {
 				if (strcmp(buffer, "director") == 0) {
 					buffer = strtok(NULL, "/");
@@ -45,45 +42,36 @@ list<pelicula>* parser::getPeliculasDeArchivo() {
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/<");
 					cantStaff++;
-//					cout << "D: " << buffer << endl;
-					staff dir = staff(buffer,'D');
-					listaStaff->push_back(dir);
+					peli->addStaff(new staff(buffer, 'D'));
 				} else if (strcmp(buffer, "writer") == 0) {
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/<");
 					cantStaff++;
-//					cout << "W: " << buffer << endl;
-					staff wri = staff(buffer,'W');
-					listaStaff->push_back(wri);
+					peli->addStaff(new staff(buffer, 'W'));
 				} else if (strcmp(buffer, "actor") == 0) {
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/");
 					buffer = strtok(NULL, "/<");
 					cantStaff++;
-//					cout << "A: " << buffer << endl;
-					staff act = staff(buffer,'A');
-					listaStaff->push_back(act);
+					peli->addStaff(new staff(buffer, 'A'));
 				}
 				buffer = strtok(NULL, "<>");
 			}
 			if (cantStaff != 0) {
-				pelicula peli = pelicula(nombre, cantStaff);
-				peli.setStaff(listaStaff);
-				listaPeliculas->push_back(peli);
+				peli->setCantStaff(cantStaff);
+				listaPeliculas.push_back(peli);
 			}
 		}
 		buffer = strtok(NULL, "<>");
 	}
-//	cout << cantStaff << endl;
 	delete xml;
 	this->listaPeliculas = listaPeliculas;
 	return listaPeliculas;
 }
 
 parser::~parser() {
-	delete this->listaPeliculas;
 	delete this->archivoPeliculas;
 }
