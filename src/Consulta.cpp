@@ -1,7 +1,20 @@
 #include "Consulta.h"
 
-Consulta::Consulta(){
-	tieneArchivoPreConsulta=false;
+Consulta::Consulta(bool preConsulta){
+	tieneArchivoPreConsulta=preConsulta;
+	if(tieneArchivoPreConsulta){
+		fstream* archivo2 = new fstream;
+		archivo2->open("preconsulta.bin",ios::in|ios::out|ios::binary);
+		bool existeArchivo=archivo2->good();
+		archivo2->close();
+		delete archivo2;
+		if(!existeArchivo){
+			armarArchivoPreConsulta(GRADOMAX);
+		} else {
+			this->archivoConsulta = new ArchivoPreConsulta(CANTVERTICES,false);
+		}
+	}
+
 }
 
 list<peliculaHijo> Consulta::staffHijos(int staffID){
@@ -178,6 +191,7 @@ list<padrePeliculaHijo> Consulta::actoresHijos(int staffOrigen, int gradoMax){
 			aux.padre=tabla[i].padre;
 			aux.pelicula=tabla[i].pelicula;
 			aux.hijo=i;
+			aux.distancia=tabla[i].distancia;
 			listaAux.push_back(aux);
 		}
 	}
@@ -185,11 +199,10 @@ list<padrePeliculaHijo> Consulta::actoresHijos(int staffOrigen, int gradoMax){
 }
 
 bool Consulta::armarArchivoPreConsulta(int gradoMax){
-	this->archivoConsulta = new ArchivoPreConsulta(CANTVERTICES);
+	this->archivoConsulta = new ArchivoPreConsulta(CANTVERTICES,true);
 	for(int i=1;i<=CANTVERTICES;i++){
 		if(!archivoConsulta->agregarHijosActor(i,actoresHijos(i,gradoMax))) return false;
 	}
-	tieneArchivoPreConsulta=true;
 }
 
 void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
@@ -197,7 +210,7 @@ void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
 		list<padrePeliculaHijo> lista = this->archivoConsulta->CaminoActorHijo(actorOrigen,actorDestino);
 		list<padrePeliculaHijo>::iterator iter = lista.begin();
 		while(iter!=lista.end()){
-			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << endl;
+			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << " Distancia " << (*iter).distancia << endl;
 			iter++;
 		}
 	} else {

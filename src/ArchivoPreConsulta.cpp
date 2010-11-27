@@ -7,19 +7,32 @@
 
 #include "ArchivoPreConsulta.h"
 
-ArchivoPreConsulta::ArchivoPreConsulta(int cantActores) {
+ArchivoPreConsulta::ArchivoPreConsulta(int cantActores, bool construirArchivo) {
 	fstream* archivo2 = new fstream;
-	archivo2->open("hola.bin",ios::in|ios::out|ios::binary);
+	//Si el archivo no existe lo crea
+	archivo2->open("preconsulta.bin",ios::in|ios::out|ios::binary);
+	if(!archivo2->good()){
+		ofstream* archivoAux = new ofstream;
+		archivoAux->open("preconsulta.bin");
+		archivoAux->close();
+		delete archivoAux;
+		archivo2->open("preconsulta.bin",ios::in|ios::out|ios::binary);
+	}
 	archivo=archivo2;
 	cantidadActores=cantActores;
-	ultimoActorConstruido=0;
-	construido=false;
-	//Guarda para cada actor -1, o sea que para ese actor todavía no hay hijos
-	int aux = -1;
-	if(archivo->good()){
-		for(int i=0;i<cantidadActores;i++){
-			archivo->write((char*)&aux,4);
+	if(construirArchivo){
+		ultimoActorConstruido=0;
+		construido=false;
+		//Guarda para cada actor -1, o sea que para ese actor todavía no hay hijos
+		int aux = -1;
+		if(archivo->good()){
+			for(int i=0;i<cantidadActores;i++){
+				archivo->write((char*)&aux,4);
+			}
 		}
+	} else {
+		ultimoActorConstruido=cantActores;
+		construido=true;
 	}
 }
 

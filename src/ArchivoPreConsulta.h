@@ -10,14 +10,18 @@
 
 #include <iostream>
 #include <fstream>
+#include <ostream>
 #include <list>
 
 using namespace std;
+
+#define GRADOMAX 4
 
 typedef struct {
 	int hijo;
 	int padre;
 	int pelicula;
+	char distancia;
 } padrePeliculaHijo;
 
 
@@ -30,7 +34,7 @@ private:
 
 
 public:
-	ArchivoPreConsulta(int cantActores);
+	ArchivoPreConsulta(int cantActores, bool construirArchivo);
 	bool agregarHijosActor(int actor,list<padrePeliculaHijo> hijos);
 	void imprimirCamino(int actorOrigen, int actorDestino);
 	void imprimirPosicionesActores();
