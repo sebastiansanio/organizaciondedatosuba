@@ -8,6 +8,7 @@ int main(int argc,char* argv[]){
 			if(strcmp(argv[1],"Generar")==0){
 				cout<<"Se generara el indice"<<endl;
 				list<string> nombresDeArchivo;
+				nombresDeArchivo.push_front(string("data-0.xml"));
 				string nombreIndice="TpDatos";
 				indice indice(nombresDeArchivo,nombreIndice);
 			}else{
