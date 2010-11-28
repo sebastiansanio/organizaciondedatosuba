@@ -89,6 +89,9 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	while (!feof(archivoAuxiliar)){
 		fread(&registroAux,sizeof(registroAuxiliar),1,archivoAuxiliar);
+		if(feof(archivoAuxiliar)){
+			break;
+		}
 		if (strcmp(registroAux.nombreDePelicula,nombrePelicula)==0){
 			strcpy(registroAux2.nombreDeActor,registroAux.nombreDeActor);
 			registroAux2.profesion=registroAux.profesion;
@@ -115,8 +118,8 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	//Acá hay que ordenar el archivo auxiliar 2 por actor
 
-		replac_selection metodo_ordenamiento(50,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
-		metodo_ordenamiento.ordenar(string("auxiliar2"));
+	replac_selection metodo_ordenamiento(50,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
+	metodo_ordenamiento.ordenar(string("auxiliar2"));
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
 	archivoAuxiliar2=fopen("auxiliar2","r+b");
@@ -158,6 +161,9 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	while (!feof(archivoAuxiliar2)){
 		fread(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
+		if(feof(archivoAuxiliar2)){
+			break;
+		}
 		if (strcmp(registroAux2.nombreDeActor,nombreActor)==0){ //Mismo actor, solo guardo la película
 			distancia_a_padre=distancia_a_padre+1;
 			offsetAlPrincipal=offsetAlPrincipal+1;
@@ -214,6 +220,9 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	int idBuscado;
 	while(!feof(archivoAuxiliar)){
 		fread(&regRead,sizeof(es_ppal),1,archivoAuxiliar);
+		if(feof(archivoAuxiliar)){
+			break;
+		}
 		if(regRead.distancia_a_padre!=0){
 			idBuscado=regRead.id;
 			offset=0;
