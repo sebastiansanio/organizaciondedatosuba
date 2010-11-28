@@ -122,12 +122,12 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	//Acá hay que ordenar el archivo auxiliar 2 por actor
 	cout<<"llego aca"<<endl;
-	replac_selection metodo_ordenamiento(50,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
+	replac_selection metodo_ordenamiento(2500,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
 	metodo_ordenamiento.ordenar(string("auxiliar2"));
 	cout <<"salio"<<endl;
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
-	archivoAuxiliar2=fopen("auxiliar2","r+b");
+	archivoAuxiliar2=fopen("Temp_auxiliar20.bin","r+b");
 	if (feof(archivoAuxiliar2)) return;
 	archivoIndice=fopen(this->n_arch_indice.c_str(),"w+b");
 	archivoPrincipal=fopen("archivoPrincipalAux","w+b");
@@ -210,7 +210,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			fwrite(nombreActor,tamAux,1,archivoDeStrings);
 		}
 	}
-	offsetAlPrincipal=offsetAlPrincipal+1;
+	offsetAlPrincipal=offsetAlPrincipal+2;
 	fclose(archivoDeStrings);
 	fclose(archivoPrincipal);
 	fclose(archivoIndice);
@@ -223,7 +223,9 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	es_ppal regRead;
 	es_ppal regBusq;
 	int idBuscado;
+	int posicion;
 	while(!feof(archivoAuxiliar)){
+		posicion=ftell(archivoAuxiliar);
 		fread(&regRead,sizeof(es_ppal),1,archivoAuxiliar);
 		if(feof(archivoAuxiliar)){
 			break;
@@ -232,18 +234,18 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			idBuscado=regRead.id;
 			offset=0;
 			do{
+				fread(&regBusq,sizeof(es_ppal),1,archivoAuxiliar);
 				if(feof(archivoAuxiliar)){
 					offset=offset-offsetAlPrincipal;
 					fseek(archivoAuxiliar,0,SEEK_SET);
 				}
 				offset=offset+1;
-				fread(&regBusq,sizeof(es_ppal),1,archivoAuxiliar);
 				if(regBusq.distancia_a_padre==0){
 					regBusq.id=-1;	//No es una película, entonces le asigno un id no válido
 				}
 			} while (regBusq.id!=idBuscado);
 			regRead.offset_proximo=offset;
-			fseek(archivoAuxiliar,(1-offset)*sizeof(es_ppal),SEEK_CUR); //Voy al siguiente registro
+			fseek(archivoAuxiliar,posicion+sizeof(es_ppal),SEEK_SET); //Voy al siguiente registro
 		}													//del que estaba leyendo
 		fwrite(&regRead,sizeof(es_ppal),1,archivoPrincipal);	//Escribo el reg en el principal
 	}															//con el offset a la prox película o 0
