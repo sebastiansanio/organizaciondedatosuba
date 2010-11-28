@@ -60,7 +60,6 @@ void replac_selection::ordenar (const string& arch_e) {
 				stringstream ss1;
 				salida.close();
 				contArch++;
-				if (contArch > 15) exit(0);
 				ss1 << "Temp_" << arch_e << contArch << ".bin";
 				ss1 >> n_arch;
 				cout << n_arch << endl;
@@ -199,4 +198,146 @@ int replac_selection::completarArray(ifstream& e) {
 }
 
 
+
+one_way_merge::one_way_merge (unsigned int cant_particiones,string* nombres_part, int dataTam,void* (*constructor)(char*),
+		void (*destructor) (void*),int (*comp) (void*,void*), void (*persistencia) (ofstream&,void*)) {
+
+	this->cant_particiones = cant_particiones;
+	this->comp = comp;
+	this->constructor = constructor;
+	this->persistencia = persistencia;
+	this->destructor = destructor;
+	this->vector_nombres  = nombres_part;
+	this->v_elem = new T_elem [cant_particiones];
+
+}
+
+one_way_merge::~one_way_merge() {}
+
+void one_way_merge::mergear() {
+
+	ifstream input[cant_particiones];
+	ofstream output;
+
+
+	for (unsigned i = 0;i < cant_particiones ; i++) {
+		input[i].open(vector_nombres[i].c_str(),ios::in | ios::binary);
+		if (!input[i].is_open()) {
+			cout << "ERROR EN EL MERGE, NO SE PUDO ABRIR EL ARCHIVO " << vector_nombres[i].c_str() << endl;
+			exit (1);
+		}
+	}
+
+	output.open("Merge.bin",ios::out | ios::binary);
+	if (!output.is_open()) {
+		cout << "ERROR EN EL MERGE, NO SE PUDO CREAR EL ARCHIVO Merge.bin" << endl;
+		exit(1);
+	}
+
+
+
+	//lo que tengo que hacer en este metodo es completar el vector. Luego buscar el mas pequeño e
+	//insertarlo. Obtener el siguiente elemento de el archivo del cual saque el elemento más pequeño.
+	//El proceso termina cuando el vector se queda sin elementos
+
+
+	completarArray(input);
+
+	bool terminado = false;//termina cuando no hay mas elementos que extraer en ningun archivo y el vector
+							//esta vacio
+	char stream [dataTam+1];
+
+	while (!terminado){
+		int cont = 0;
+		for (unsigned i = 0; i < cant_particiones ; i++){
+			if (v_elem[i].est==ocupado) {
+				cont++;
+			}
+		}
+
+
+		stream [dataTam]= '\0';
+		if (cont==0) terminado = true;
+
+		if (!terminado) {
+			int posMin = elemMasPequenio(cont);
+			void* min,*aux;
+
+			aux = NULL;
+			if (input[posMin].read(stream,dataTam)) {
+				aux = constructor(stream);
+			}
+
+
+			min = v_elem [posMin].elem;
+			persistencia(output,min);// almaceno el elemento mas pequeño del vector
+
+			if (aux == NULL) {//se acabo la particion
+				v_elem[posMin].est = vacio;
+			}
+
+			destructor(min);
+
+		}
+
+	}
+
+	for (unsigned i = 0;i < cant_particiones ; i++)
+		input[i].close();
+
+	output.close();
+
+}
+
+
+/*Retorna la posición en el vector del elemento mas pequeño*/
+int one_way_merge::elemMasPequenio(int cant_elem) {
+	int cont = 0;
+	bool enc = false;
+	int posMin = 0;
+	void * min = NULL;
+
+	/* busco el primer elemento del vector */
+	while (cont < cant_elem && !enc) {
+		if (v_elem[cont].est == ocupado) {
+			min = v_elem [cont].elem;
+			posMin = cont;
+			enc = true;
+		}
+		else
+			cont++;
+	}
+
+	/*Encuentro el elemento mas pequeño que no está congelado*/
+	for (int i = cont+1; i < cant_elem ; i++) {
+		int j = 1;//para que no cambie el minimo en caso de que
+				   //el actual este congelado o vacio
+		if (v_elem[i].est == ocupado)
+			j = comp(min,v_elem[i].elem);
+
+		if (j == -1){// si el min actual es mas grande
+			min = v_elem[i].elem;
+			posMin = i;
+		}
+	}//for
+
+	return posMin;
+}
+
+
+/*Completo el vector con un elemento de cada particion*/
+void one_way_merge::completarArray(ifstream e []) {
+
+	char  stream [dataTam+1];
+
+	unsigned i =0;
+	while (i < cant_particiones){
+		e[i].read(stream,dataTam);
+		stream [dataTam]= '\0';
+		v_elem [i].elem = constructor (stream);
+		v_elem [i].est = ocupado;
+		i++;
+
+	}
+}
 
