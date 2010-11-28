@@ -11,7 +11,11 @@ void persistir(ofstream& stream, void* elemento){
 int comparar(void * elemento1, void * elemento2){
 	registroAuxiliar2 * registro1=(registroAuxiliar2*)elemento1;
 	registroAuxiliar2 * registro2=(registroAuxiliar2*)elemento2;
-	return strcmp(registro1->nombreDeActor,registro2->nombreDeActor);
+	if(strcmp(registro1->nombreDeActor,registro2->nombreDeActor)==0)
+		return 0;
+	if(strcmp(registro1->nombreDeActor,registro2->nombreDeActor)<0)
+		return 1;
+	return -1;
 }
 
 void * construir(char * stream){
@@ -117,9 +121,10 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	fclose(archivoAuxiliar2);
 
 	//Acá hay que ordenar el archivo auxiliar 2 por actor
-
+	cout<<"llego aca"<<endl;
 	replac_selection metodo_ordenamiento(50,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
 	metodo_ordenamiento.ordenar(string("auxiliar2"));
+	cout <<"salio"<<endl;
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
 	archivoAuxiliar2=fopen("auxiliar2","r+b");
