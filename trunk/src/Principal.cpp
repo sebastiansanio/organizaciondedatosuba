@@ -11,6 +11,8 @@ int main(int argc,char* argv[]){
 				nombresDeArchivo.push_front(string("data-0.xml"));
 				string nombreIndice="TpDatos";
 				indice indice(nombresDeArchivo,nombreIndice);
+			}else if(strcmp(argv[1],"Probar")==0){
+				//Aca probaria si esta bien creado el indice
 			}else{
 				cout<<"Parametro incorrecto"<<endl;
 			}
