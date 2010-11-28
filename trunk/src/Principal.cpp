@@ -11,10 +11,109 @@ int main(int argc,char* argv[]){
 				nombresDeArchivo.push_front(string("data-0.xml"));
 				string nombreIndice="TpDatos";
 				indice indice(nombresDeArchivo,nombreIndice);
-			}else if(strcmp(argv[1],"Probar")==0){
-				//Aca probaria si esta bien creado el indice
+			}else if(strcmp(argv[1],"auxiliar")==0){
+				FILE* file;
+				registroAuxiliar reg;
+
+				file=fopen("auxiliar","r+b");
+				while (!feof(file)){
+					fread(&reg,sizeof(registroAuxiliar),1,file);
+					if(feof(file)){
+						break;
+					}
+					printf("actor: %s pelicula: %s profesion: %c \n",reg.nombreDeActor,reg.nombreDePelicula,reg.profesion);
+				}
+
+				fclose(file);
+				break;
+			}else if(strcmp(argv[1],"auxiliar2")==0){
+				FILE* file2;
+				registroAuxiliar2 reg2;
+
+				file2=fopen("auxiliar2","r+b");
+				while (!feof(file2)){
+					fread(&reg2,sizeof(registroAuxiliar2),1,file2);
+					if(feof(file2)){
+						break;
+					}
+					printf("actor: %s pelicula: %d profesion: %c \n",reg2.nombreDeActor,reg2.offsetPelicula,reg2.profesion);
+				}
+
+				fclose(file2);
+				break;
+			}else if(strcmp(argv[1],"concatenacion")==0){
+				FILE* file3;
+				size_t size;
+				char* nombrePelicula;
+
+				file3=fopen("TpDatosc.conc","r+b");
+				while (!feof(file3)){
+					fread(&size,sizeof(size_t),1,file3);
+					if(feof(file3)){
+						break;
+					}
+					nombrePelicula=(char*)malloc(size);
+					fread(nombrePelicula,size,1,file3);
+					printf("Cant caracteres: %d Nombre: %s \n",size,nombrePelicula);
+				}
+				printf("Tam size_t: %d\n",sizeof(size_t));
+				fclose(file3);
+				break;
+
 			}else{
 				cout<<"Parametro incorrecto"<<endl;
+			}
+			break;
+		}
+		case(3):{
+			if(strcmp(argv[2],"1")==0){
+				FILE* file2;
+				registroAuxiliar2 reg2;
+
+				file2=fopen(argv[1],"r+b");
+				while (!feof(file2)){
+					fread(&reg2,sizeof(registroAuxiliar2),1,file2);
+					if(feof(file2)){
+						break;
+					}
+					printf("actor: %s pelicula: %d profesion: %c \n",reg2.nombreDeActor,reg2.offsetPelicula,reg2.profesion);
+				}
+
+				fclose(file2);
+				break;
+			}else if(strcmp(argv[2],"2")==0){
+				FILE* file2;
+				es_indice reg2;
+
+				file2=fopen(argv[3],"r+b");
+				while (!feof(file2)){
+					fread(&reg2,sizeof(es_indice),1,file2);
+					if(feof(file2)){
+						break;
+					}
+					printf("offsetalnombre: %d offsetalppal: %d profesion: %c \n",reg2.offset_al_nombre,reg2.offset_al_ppal,reg2.profesion);
+				}
+
+				fclose(file2);
+				break;
+			}else if(strcmp(argv[2],"3")==0){
+				FILE* file2;
+				es_ppal reg2;
+
+				file2=fopen(argv[3],"r+b");
+				while (!feof(file2)){
+					fread(&reg2,sizeof(es_ppal),1,file2);
+					if(feof(file2)){
+						break;
+					}
+					printf("distanciaPadre: %d id: %d offsetProximo: %d \n",reg2.distancia_a_padre,reg2.id,reg2.offset_proximo);
+				}
+
+				fclose(file2);
+				break;
+			}else{
+				cout<<"El parametro correspondiente al numero no es valido"<<endl;
+				break;
 			}
 			break;
 		}
