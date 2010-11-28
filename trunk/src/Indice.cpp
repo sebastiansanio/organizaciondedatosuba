@@ -82,7 +82,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	registroAux2.profesion=registroAux.profesion;
 	fwrite(&registroAux2,sizeof(registroAuxiliar2),1,archivoAuxiliar2);
 	tamAux=strlen(registroAux.nombreDePelicula);
-	nombrePelicula=(char*)malloc(tamAux);
+	nombrePelicula=(char*)malloc(tamAux+1);
 	strcpy(nombrePelicula,registroAux.nombreDePelicula);
 	fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
 	fwrite(nombrePelicula,tamAux,1,archivoDeStrings);
@@ -104,7 +104,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			registroAux2.profesion=registroAux.profesion;
 			tamAux=strlen(registroAux.nombreDePelicula);
 			free(nombrePelicula);
-			nombrePelicula=(char*)malloc(tamAux);
+			nombrePelicula=(char*)malloc(tamAux+1);
 			strcpy(nombrePelicula,registroAux.nombreDePelicula);
 			fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
 			fwrite(nombrePelicula,tamAux,1,archivoDeStrings);
@@ -154,7 +154,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 
 	//Concatenamos el nombre del actor
 	tamAux=strlen(registroAux2.nombreDeActor);
-	nombreActor=(char*)malloc(tamAux);
+	nombreActor=(char*)malloc(tamAux+1);
 	strcpy(nombreActor,registroAux2.nombreDeActor);
 	fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
 	fwrite(nombreActor,tamAux,1,archivoDeStrings);
@@ -199,7 +199,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 			//Guarda el nombre en el archivo de concatenacion
 			tamAux=strlen(registroAux2.nombreDeActor);
 			free(nombreActor);
-			nombreActor=(char*)malloc(tamAux);
+			nombreActor=(char*)malloc(tamAux+1);
 			strcpy(nombreActor,registroAux2.nombreDeActor);
 			fwrite(&tamAux,sizeof(size_t),1,archivoDeStrings);
 			fwrite(nombreActor,tamAux,1,archivoDeStrings);
