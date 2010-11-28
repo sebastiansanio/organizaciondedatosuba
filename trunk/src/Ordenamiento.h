@@ -73,4 +73,50 @@ class replac_selection {
 };
 
 
+
+class one_way_merge {
+
+	typedef struct{
+		void* elem;
+		estado est;
+	}T_elem;
+
+
+private:
+		int dataTam;//para saber de que tamaño es el stream
+		unsigned cant_particiones;
+		string* vector_nombres;//vector con los nombres de las particiones
+
+
+		/*Recibe un stream, retorna un puntero al elemento*/
+		void* (*constructor)(char*);
+
+		/*Destruye el elemento*/
+		void (*destructor) (void*);
+
+		/* para comparar las claves, debe retornar -1 si el 1° parametro es mayor,
+		 * 0 si son iguales, 1 si el segundo es mayor*/
+		int (*comp) (void*,void*);
+
+		void (*persistencia) (ofstream&,void*);
+
+		T_elem* v_elem;
+
+		int elemMasPequenio(int cant_elem);
+		void completarArray(ifstream e[] );
+
+public:
+		one_way_merge (unsigned int cant_particiones,string nombres_part[], int dataTam,void* (*constructor)(char*),
+				void (*destructor) (void*),int (*comp) (void*,void*),
+				void (*persistencia) (ofstream&,void*));
+
+		~one_way_merge();
+
+		void mergear();
+
+
+
+};
+
+
 #endif /* ORDENAMIENTO_H_ */
