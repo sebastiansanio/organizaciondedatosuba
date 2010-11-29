@@ -15,7 +15,15 @@ void pelicula::setCantStaff(int cantStaff){
 }
 
 void pelicula::addStaff(staff* staffAgregar){
-	this->listaStaff->push_back(staffAgregar);
+	list<staff*>::iterator it = listaStaff->begin();
+	bool encontrado = false;
+	while(it != listaStaff->end() and !encontrado){
+		if((*it)->getNombre() == staffAgregar->getNombre());
+			encontrado = true;
+		it++;
+	}
+	if(!encontrado)
+		this->listaStaff->push_back(staffAgregar);
 }
 
 list<staff*>* pelicula::getStaff(){

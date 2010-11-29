@@ -11,7 +11,7 @@
 
 #include <list>
 #include <string>
-
+#include <string.h>
 
 using namespace std;
 

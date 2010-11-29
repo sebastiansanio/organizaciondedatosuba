@@ -27,6 +27,7 @@ class parser{
 	public:
 	parser(const char* nombre);
 	list<pelicula*> getPeliculasDeArchivo();
+	string limpiarNombre(string nombreALimpiar);
 	virtual ~parser();
 
 };
