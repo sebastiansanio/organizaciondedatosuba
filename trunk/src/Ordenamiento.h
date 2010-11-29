@@ -62,7 +62,7 @@ class replac_selection {
 		/* Param:
 		 * --string: nombre archivo entrada
 		 * */
-		void ordenar (const string&);
+		int ordenar (const string&);
 
 
 

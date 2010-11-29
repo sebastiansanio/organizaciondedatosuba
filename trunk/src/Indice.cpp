@@ -121,10 +121,25 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	fclose(archivoAuxiliar2);
 
 	//Acá hay que ordenar el archivo auxiliar 2 por actor
-	cout<<"llego aca"<<endl;
+	//Genero particiones
+	unsigned int cantArch;
+
 	replac_selection metodo_ordenamiento(2500,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
-	metodo_ordenamiento.ordenar(string("auxiliar2"));
-	cout <<"salio"<<endl;
+	cantArch=metodo_ordenamiento.ordenar(string("auxiliar2"));
+
+	//Mergeo las particiones
+//	cantArch=cantArch+1;
+//	string* vectorString=new string[cantArch];
+//
+//	for(unsigned int strCont=0;strCont<cantArch;strCont++){
+//		stringstream streamAux;
+//		streamAux<<"Temp_auxiliar2"<<strCont<<".bin";
+//		streamAux>> vectorString[strCont];
+//		cout<<vectorString[strCont]<<endl;
+//	}
+//	one_way_merge merger(cantArch,vectorString,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
+//	merger.mergear();
+
 
 	//Se crea el índice de actores y la concatenación de strings de sus nombres.
 	archivoAuxiliar2=fopen("Temp_auxiliar20.bin","r+b");
