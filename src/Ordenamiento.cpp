@@ -24,7 +24,7 @@ replac_selection::replac_selection(int buffTam, int dataTam,void* (*constructor)
 /* Param:
  * --string: nombre arch entrada y salida
  * */
-void replac_selection::ordenar (const string& arch_e) {
+int replac_selection::ordenar (const string& arch_e) {
 	stringstream ss;
 	ifstream entrada;
 	ofstream salida;
@@ -33,7 +33,7 @@ void replac_selection::ordenar (const string& arch_e) {
 
 	if (!entrada.is_open()){
 		cout << "ARCHIVO NO ENCONTRADO" << endl;
-		return;
+		return 0;
 	}
 
 
@@ -48,7 +48,7 @@ void replac_selection::ordenar (const string& arch_e) {
 
 	ss << "Temp_" << arch_e << contArch << ".bin";
 	ss >> n_arch;
-	cout << n_arch << endl;
+	//cout << n_arch << endl;
 	salida.open (n_arch.c_str(), ios::out | ios::binary);
 
 	char stream [dataTam+1];
@@ -62,7 +62,7 @@ void replac_selection::ordenar (const string& arch_e) {
 				contArch++;
 				ss1 << "Temp_" << arch_e << contArch << ".bin";
 				ss1 >> n_arch;
-				cout << n_arch << endl;
+				//cout << n_arch << endl;
 
 				salida.open(n_arch.c_str(), ios::out | ios::binary);
 				descongelarElem(buffTam);
@@ -78,28 +78,28 @@ void replac_selection::ordenar (const string& arch_e) {
 
 			posMin = elemMasPequenio(buffTam);
 
-			//TODO ESTO HAY QUE BORRARLO <<<<<
-			int k;
-			cout << "\nVECTOR" << endl;
-			if (!entrada.eof()) {
-				int nro = atoi(stream);
-				cout << "Numero para insertar: " << nro << endl;
-			}
-			else
-				cout << "no hay mas numeros" << endl;
-			for (int q =0 ; q < buffTam ; q++) {
-				if ( v_elem [q].est != vacio)
-					k = *((int *) v_elem [q].elem);
-				if (v_elem [q].est == ocupado)
-					cout << "El elem  n°" << q+1 << " es " << k << endl;
-				else if (v_elem [q].est == congelado)
-					cout << "El elem  n°" << q+1 << " es " << k << " (congelado)" << endl;
-				else
-					cout << "El elem  n°" << q+1 << " (vacio)" <<endl;
-			}
-			k = *((int *) v_elem [posMin].elem);
-			cout << "El Minimo es: " << k << endl << endl;
-			// >>>>>>
+//			//ESTO HAY QUE BORRARLO <<<<<
+//			int k;
+//			cout << "\nVECTOR" << endl;
+//			if (!entrada.eof()) {
+//				int nro = atoi(stream);
+//				cout << "Numero para insertar: " << nro << endl;
+//			}
+//			else
+//				cout << "no hay mas numeros" << endl;
+//			for (int q =0 ; q < buffTam ; q++) {
+//				if ( v_elem [q].est != vacio)
+//					k = *((int *) v_elem [q].elem);
+//				if (v_elem [q].est == ocupado)
+//					cout << "El elem  n°" << q+1 << " es " << k << endl;
+//				else if (v_elem [q].est == congelado)
+//					cout << "El elem  n°" << q+1 << " es " << k << " (congelado)" << endl;
+//				else
+//					cout << "El elem  n°" << q+1 << " (vacio)" <<endl;
+//			}
+//			k = *((int *) v_elem [posMin].elem);
+//			cout << "El Minimo es: " << k << endl << endl;
+//			// >>>>>>
 
 			min = v_elem [posMin].elem;
 			persistencia(salida,min);// almaceno el elemento mas pequeño del vector
@@ -127,6 +127,7 @@ void replac_selection::ordenar (const string& arch_e) {
 		if (salida.is_open())
 			salida.close();
 		entrada.close();
+		return contArch;
 
 }
 
@@ -192,7 +193,7 @@ int replac_selection::completarArray(ifstream& e) {
 
 
 	}
-	cout << "sale con el numero " << atoi(stream) << endl;
+	//cout << "sale con el numero " << atoi(stream) << endl;
 
 	return cantElem;
 }
