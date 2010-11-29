@@ -18,8 +18,9 @@ void pelicula::addStaff(staff* staffAgregar){
 	list<staff*>::iterator it = listaStaff->begin();
 	bool encontrado = false;
 	while(it != listaStaff->end() and !encontrado){
-		if((*it)->getNombre() == staffAgregar->getNombre());
+		if((*it)->getNombre() == staffAgregar->getNombre()){
 			encontrado = true;
+		}
 		it++;
 	}
 	if(!encontrado)
