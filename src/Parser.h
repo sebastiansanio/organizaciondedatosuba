@@ -23,11 +23,13 @@ class parser{
 	private:
 	ifstream* archivoPeliculas;
 	list<pelicula*> listaPeliculas;
+	string decodificador;
 
 	public:
 	parser(const char* nombre);
 	list<pelicula*> getPeliculasDeArchivo();
 	string limpiarNombre(string nombreALimpiar);
+	string decodificar(string palabraADecodificar);
 	virtual ~parser();
 
 };
