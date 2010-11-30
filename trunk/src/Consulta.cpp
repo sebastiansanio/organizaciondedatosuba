@@ -2,6 +2,7 @@
 
 Consulta::Consulta(bool preConsulta){
 	tieneArchivoPreConsulta=preConsulta;
+	index= new indice("TpDatos");
 	if(tieneArchivoPreConsulta){
 		fstream* archivo2 = new fstream;
 		archivo2->open("preconsulta.bin",ios::in|ios::out|ios::binary);
@@ -14,7 +15,38 @@ Consulta::Consulta(bool preConsulta){
 			this->archivoConsulta = new ArchivoPreConsulta(CANTVERTICES,false);
 		}
 	}
-
+	int id;
+	salidas as=index->getID_staff("Yves Michel-Beneche",id);
+	if(as==error)
+		cout<<"error"<<endl;
+	cout<<"Id de Yves Michel-Beneche " << id << endl;
+	list<int> peliculas;
+	as=index->getAllPeliculas(id,peliculas);
+	if(as==error)
+		cout<<"error"<<endl;
+	list<int>::iterator iter = peliculas.begin();
+	string nombre;
+	cout<<"Trabajo en las siguientes peliculas:"<<endl;
+	while(iter!=peliculas.end()){
+		cout << "Codigo: "<<(*iter)<< " ";
+		index->getNombrePelicula(nombre,(*iter));
+		cout<<"Nombre: "<<nombre<<endl;
+		iter++;
+	}
+	peliculas.clear();
+	as=index->getAllStaff(2763,1424,peliculas);
+	iter = peliculas.begin();
+	while(iter!=peliculas.end()){
+		cout << (*iter) << endl;
+		iter++;
+	}
+	if(as==error){
+		cout<<"error en traer todos los staff"<<endl;
+	}
+	cout<<"Se buscara un actor por id"<<endl;
+	staff actor("asd",'c');
+	index->getStaff(id,actor);
+	cout<<"Actor id = "<<id<<" Nombre: "<<actor.getNombre()<<endl;
 }
 
 list<peliculaHijo> Consulta::staffHijos(int staffID){
@@ -236,4 +268,5 @@ void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
 
 Consulta::~Consulta() {
 	if(tieneArchivoPreConsulta) delete archivoConsulta;
+	delete index;
 }

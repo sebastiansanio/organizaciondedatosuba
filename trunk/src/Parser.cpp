@@ -16,6 +16,11 @@ string parser::limpiarNombre(string nombreALimpiar){
 	found = nombre2.find("%28");
 	if (found < nombre2.size() and found != string::npos)
 		nombre2 = nombre2.substr(0, found - 1);
+	found = nombre2.find("%C3%A9");
+		if (found < nombre2.size() and found != string::npos){
+			nombre2.replace(found, 6, "\xC3\xA9");
+			cout<<nombre2<<endl;
+		}
 	return nombre2;
 }
 
