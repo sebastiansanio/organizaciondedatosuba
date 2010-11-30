@@ -16,17 +16,17 @@ Consulta::Consulta(bool preConsulta){
 		}
 	}
 	int id;
-	salidas as=index->getID_staff("Yves Michel-Beneche",id);
+	salidas as=index->getID_staff("Nicolas Cage",id);
 	if(as==error)
 		cout<<"error"<<endl;
-	cout<<"Id de Yves Michel-Beneche " << id << endl;
+	cout<<"Id de Nicolas Cage " << id << endl;
 	list<int> peliculas;
 	as=index->getAllPeliculas(id,peliculas);
 	if(as==error)
 		cout<<"error"<<endl;
 	list<int>::iterator iter = peliculas.begin();
 	string nombre;
-	cout<<"Trabajo en las siguientes peliculas:"<<endl;
+	cout<<"\nTrabajo en las siguientes peliculas:"<<endl;
 	while(iter!=peliculas.end()){
 		cout << "Codigo: "<<(*iter)<< " ";
 		index->getNombrePelicula(nombre,(*iter));
@@ -34,7 +34,8 @@ Consulta::Consulta(bool preConsulta){
 		iter++;
 	}
 	peliculas.clear();
-	as=index->getAllStaff(2763,1424,peliculas);
+	cout<<endl<<"\nTraemos todos los actores de una determinada pelicula:"<<endl;
+	as=index->getAllStaff(4331,1060,peliculas);
 	iter = peliculas.begin();
 	while(iter!=peliculas.end()){
 		cout << (*iter) << endl;
@@ -43,7 +44,11 @@ Consulta::Consulta(bool preConsulta){
 	if(as==error){
 		cout<<"error en traer todos los staff"<<endl;
 	}
-	cout<<"Se buscara un actor por id"<<endl;
+	cout<<"\nSe buscara una pelicula por id"<<endl;
+	string nombrePelicula;
+	index->getNombrePelicula(nombrePelicula,4331);
+	cout<<"Pelicula: "<<nombrePelicula<<endl;
+	cout<<"\nSe buscara un actor por id"<<endl;
 	staff actor("asd",'c');
 	index->getStaff(id,actor);
 	cout<<"Actor id = "<<id<<" Nombre: "<<actor.getNombre()<<endl;

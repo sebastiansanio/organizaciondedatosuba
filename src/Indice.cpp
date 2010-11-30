@@ -301,7 +301,6 @@ salidas indice::getID_staff(const string& nombre, int& id){
 		nombreAux=new char[tamAux + 1];
 		nombreAux[tamAux]='\0';
 		fread(nombreAux,tamAux,1,archivo_nombres);
-		cout<<nombreAux<<endl;
 		if(inicio>final){
 			delete []nombreAux;
 			fclose(archivo);
