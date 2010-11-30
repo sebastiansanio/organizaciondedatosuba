@@ -418,37 +418,9 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	while(staff_levantado.id!=Id_staff){
 		fseek(archivo_ppal,offset_proximo,SEEK_CUR);
 		fread(&pelicula,sizeof(es_ppal),1,archivo_ppal);
-		int v;
-//		int v=atoi(&(pelicula.distancia_a_padre));
-		switch(pelicula.distancia_a_padre){
-			case(1):{v=1;break;}
-			case(2):{v=2;break;}
-			case(3):{v=3;break;}
-			case(4):{v=4;break;}
-			case(5):{v=5;break;}
-			case(6):{v=6;break;}
-			case(7):{v=7;break;}
-			case(8):{v=8;break;}
-			case(9):{v=9;break;}
-			case(10):{v=10;break;}
-			case(11):{v=11;break;}
-			case(12):{v=12;break;}
-			case(13):{v=13;break;}
-			case(14):{v=14;break;}
-			case(15):{v=15;break;}
-			case(16):{v=16;break;}
-			case(17):{v=17;break;}
-			case(18):{v=18;break;}
-			case(19):{v=29;break;}
-			case(20):{v=20;break;}
-			case(21):{v=21;break;}
-			case(22):{v=22;break;}
-			case(23):{v=23;break;}
-			case(24):{v=24;break;}
-			case(25):{v=25;break;}
-			case(26):{v=26;break;}
-			case(27):{v=27;break;}
-		}
+
+		int v=pelicula.distancia_a_padre;
+
 		fseek(archivo_ppal,(-v - 1)*sizeof(es_ppal),SEEK_CUR);
 		fread((void*)&staff_levantado,sizeof(es_ppal),1,archivo_ppal);
 		fseek(archivo_ppal,(v)*sizeof(es_ppal),SEEK_CUR);
