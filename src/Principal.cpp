@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-#include "Indice.h"
+#include "Consulta.h"
 
 int main(int argc,char* argv[]){
 	switch(argc){
@@ -66,11 +66,11 @@ int main(int argc,char* argv[]){
 			break;
 		}
 		case(3):{
-			if(strcmp(argv[2],"1")==0){
+			if(strcmp(argv[1],"1")==0){
 				FILE* file2;
 				registroAuxiliar2 reg2;
 
-				file2=fopen(argv[1],"r+b");
+				file2=fopen(argv[2],"r+b");
 				while (!feof(file2)){
 					fread(&reg2,sizeof(registroAuxiliar2),1,file2);
 					if(feof(file2)){
@@ -81,11 +81,11 @@ int main(int argc,char* argv[]){
 
 				fclose(file2);
 				break;
-			}else if(strcmp(argv[2],"2")==0){
+			}else if(strcmp(argv[1],"2")==0){
 				FILE* file2;
 				es_indice reg2;
 
-				file2=fopen(argv[3],"r+b");
+				file2=fopen(argv[2],"r+b");
 				while (!feof(file2)){
 					fread(&reg2,sizeof(es_indice),1,file2);
 					if(feof(file2)){
@@ -96,11 +96,11 @@ int main(int argc,char* argv[]){
 
 				fclose(file2);
 				break;
-			}else if(strcmp(argv[2],"3")==0){
+			}else if(strcmp(argv[1],"3")==0){
 				FILE* file2;
 				es_ppal reg2;
 
-				file2=fopen(argv[3],"r+b");
+				file2=fopen(argv[2],"r+b");
 				while (!feof(file2)){
 					fread(&reg2,sizeof(es_ppal),1,file2);
 					if(feof(file2)){
@@ -118,10 +118,9 @@ int main(int argc,char* argv[]){
 			break;
 		}
 		case(5):{
-			indice indice("TpDatos");
 			if(strcmp(argv[1],"--from")==0){
 				if(strcmp(argv[3],"--to")==0){
-
+					Consulta consulta(false);
 				}else if(strcmp(argv[3],"--degree")==0){
 
 				}else{

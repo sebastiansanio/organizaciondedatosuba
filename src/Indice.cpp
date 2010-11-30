@@ -287,7 +287,7 @@ salidas indice::getID_staff(const string& nombre, int& id){
 	es_indice registro;
 	FILE * archivo=fopen(this->n_arch_indice.c_str(),"r+b");
 	FILE * archivo_nombres=fopen(this->n_arch_conc_string.c_str(),"r+b");
-	char * nombreAux;
+	char * nombreAux=new char[1];
 	size_t tamAux;
 	int inicio=0;
 	int final=this->cantidad_staff;
@@ -297,8 +297,11 @@ salidas indice::getID_staff(const string& nombre, int& id){
 		fread(&registro,sizeof(es_indice),1,archivo);
 		fseek(archivo_nombres,registro.offset_al_nombre,SEEK_SET);
 		fread(&tamAux,sizeof(size_t),1,archivo_nombres);
-		nombreAux=new char[tamAux];
+		delete []nombreAux;
+		nombreAux=new char[tamAux + 1];
+		nombreAux[tamAux]='\0';
 		fread(nombreAux,tamAux,1,archivo_nombres);
+		cout<<nombreAux<<endl;
 		if(inicio>final){
 			delete []nombreAux;
 			fclose(archivo);
@@ -318,7 +321,6 @@ salidas indice::getID_staff(const string& nombre, int& id){
 			final=medio - 1;
 			medio=(final + inicio)/2;
 		}
-		delete []nombreAux;
 	}
 }
 
@@ -337,9 +339,9 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 
 	es_indice staff;
 
-	fread((void*)&staff.offset_al_nombre,sizeof(staff.offset_al_nombre),1,archivo_indice);
-	fread((void*)&staff.offset_al_ppal,sizeof(staff.offset_al_ppal),1,archivo_indice);
-	fread((void*)&staff.profesion,sizeof(staff.profesion),1,archivo_indice);
+	fread((void*)&staff,sizeof(es_indice),1,archivo_indice);
+//	fread((void*)&staff.offset_al_ppal,sizeof(staff.offset_al_ppal),1,archivo_indice);
+//	fread((void*)&staff.profesion,sizeof(staff.profesion),1,archivo_indice);
 
 	FILE * archivo_ppal;
 	archivo_ppal = fopen(this->n_arch_principal.c_str(),"r+b");
@@ -352,23 +354,23 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 	es_ppal staff_aux,pelicula;
 
 	//Leo el actor
-	fread((void*)&staff_aux.distancia_a_padre,sizeof(staff_aux.distancia_a_padre),1,archivo_ppal);
-	fread((void*)&staff_aux.id,sizeof(staff_aux.id),1,archivo_ppal);
-	fread((void*)&staff_aux.offset_proximo,sizeof(staff_aux.offset_proximo),1,archivo_ppal);
+//	fread((void*)&staff_aux.distancia_a_padre,sizeof(staff_aux.distancia_a_padre),1,archivo_ppal);
+//	fread((void*)&staff_aux.id,sizeof(staff_aux.id),1,archivo_ppal);
+	fread((void*)&staff_aux,sizeof(es_ppal),1,archivo_ppal);
 
 	if(staff_aux.distancia_a_padre!=0)
 		return error;//porque quiere decir que no empezo levantando el actor por lo que esta mal
 
 	//Leo la pelicula
-	fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
-	fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
-	fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+//	fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
+//	fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+	fread((void*)&pelicula,sizeof(es_ppal),1,archivo_ppal);
 
 	while(pelicula.distancia_a_padre!=0){//veo que no levante un actor nuevo
 		ID_peliculas.push_front(pelicula.id);
-		fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
-		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
-		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+		fread((void*)&pelicula,sizeof(es_ppal),1,archivo_ppal);
+//		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+//		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
 	}
 
 	fclose(archivo_indice);
@@ -392,9 +394,9 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 
 	es_indice staff_in;
 
-	fread((void*)&staff_in.offset_al_nombre,sizeof(staff_in.offset_al_nombre),1,archivo_indice);
-	fread((void*)&staff_in.offset_al_ppal,sizeof(staff_in.offset_al_ppal),1,archivo_indice);
-	fread((void*)&staff_in.profesion,sizeof(staff_in.profesion),1,archivo_indice);
+	fread((void*)&staff_in,sizeof(es_indice),1,archivo_indice);
+//	fread((void*)&staff_in.offset_al_ppal,sizeof(staff_in.offset_al_ppal),1,archivo_indice);
+//	fread((void*)&staff_in.profesion,sizeof(staff_in.profesion),1,archivo_indice);
 
 	FILE * archivo_ppal;
 	archivo_ppal = fopen(this->n_arch_principal.c_str(),"r+b");
@@ -407,53 +409,59 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 	es_ppal staff_aux,pelicula;
 
 	//Leo el actor en el ppal
-	fread((void*)&staff_aux.distancia_a_padre,sizeof(staff_aux.distancia_a_padre),1,archivo_ppal);
-	fread((void*)&staff_aux.id,sizeof(staff_aux.id),1,archivo_ppal);
-	fread((void*)&staff_aux.offset_proximo,sizeof(staff_aux.offset_proximo),1,archivo_ppal);
+	fread((void*)&staff_aux,sizeof(es_ppal),1,archivo_ppal);
+//	fread((void*)&staff_aux.id,sizeof(staff_aux.id),1,archivo_ppal);
+//	fread((void*)&staff_aux.offset_proximo,sizeof(staff_aux.offset_proximo),1,archivo_ppal);
+
 
 	if((staff_aux.distancia_a_padre!=0)or(staff_aux.id!=Id_staff))
 		return error;//porque quiere decir que no empezo levantando el actor por lo que esta mal o que no es el id del staff realmente buscado
 
 	//Leo la primer pelicula del actor
-	fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
-	fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
-	fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+	fread((void*)&pelicula,sizeof(es_ppal),1,archivo_ppal);
+//	fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+//	fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
 
 	//Busco la pelicula en ese actor
 	while(pelicula.id!=ID_pelicula){
 		if(feof(archivo_ppal)) return error;
-		fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
-		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
-		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+		fread((void*)&pelicula,sizeof(es_ppal),1,archivo_ppal);
+//		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+//		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
 		if(pelicula.distancia_a_padre==0) return error; //quiere decir que no tiene la pelicula
 	}
-
 	es_ppal staff_levantado;
-	int offset_proximo=pelicula.offset_proximo*sizeof(es_ppal);
-	char distancia_padre_aux;
+	cout<<pelicula.id<<endl;
+	cout<<pelicula.offset_proximo<<endl;
+	int offset_proximo=(pelicula.offset_proximo - 1)*sizeof(es_ppal);
 	//vaya yendo a todos los offset al proximo hasta que vuelva al primero
 	while(staff_levantado.id!=Id_staff){
 		fseek(archivo_ppal,offset_proximo,SEEK_CUR);
-		fread((void*)&pelicula.distancia_a_padre,sizeof(pelicula.distancia_a_padre),1,archivo_ppal);
-		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
-		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+		fread(&pelicula,sizeof(es_ppal),1,archivo_ppal);
+//		fread((void*)&pelicula.id,sizeof(pelicula.id),1,archivo_ppal);
+//		fread((void*)&pelicula.offset_proximo,sizeof(pelicula.offset_proximo),1,archivo_ppal);
+		cout<<pelicula.id<<endl;
+		printf("%d",pelicula.distancia_a_padre);
+		cout<<endl;
+		int v=atoi(&(pelicula.distancia_a_padre));
+		cout<<v<<endl;
+		fseek(archivo_ppal,(-v - 1)*sizeof(es_ppal),SEEK_CUR);
+		fread((void*)&staff_levantado,sizeof(es_ppal),1,archivo_ppal);
+		cout<<staff_levantado.id<<endl;
+		fseek(archivo_ppal,(v-1)*sizeof(es_ppal),SEEK_CUR);
 
-		distancia_padre_aux=pelicula.distancia_a_padre;
-		fseek(archivo_ppal,-pelicula.distancia_a_padre*sizeof(es_ppal),SEEK_CUR);
-		fread((void*)&staff_levantado,sizeof(staff_levantado),1,archivo_ppal);
-
-		fseek(archivo_ppal,(distancia_padre_aux-1)*sizeof(es_ppal),SEEK_CUR);
-
-		if(staff_levantado.distancia_a_padre!=0)
+		if(staff_levantado.distancia_a_padre!=0){
+			cout<<"no llego a un actor id"<<endl;
 			return error;//quiere decir que no llego a un id de actor
 
+		}
 		if(staff_levantado.id!=Id_staff)
 			ID_staff.push_front(staff_levantado.id);
 
-		offset_proximo=pelicula.offset_proximo*sizeof(es_ppal);
+		offset_proximo=(pelicula.offset_proximo - 1)*sizeof(es_ppal);
 
 	}
-
+	cout<<"hola"<<endl;
 	fclose(archivo_indice);
 	fclose(archivo_ppal);
 
@@ -474,9 +482,9 @@ salidas indice::getStaff(int ID_staff,staff& staff_d){
 
 	es_indice staff_aux;
 
-	fread((void*)&staff_aux.offset_al_nombre,sizeof(staff_aux.offset_al_nombre),1,archivo_indice);
-	fread((void*)&staff_aux.offset_al_ppal,sizeof(staff_aux.offset_al_ppal),1,archivo_indice);
-	fread((void*)&staff_aux.profesion,sizeof(staff_aux.profesion),1,archivo_indice);
+	fread((void*)&staff_aux,sizeof(es_indice),1,archivo_indice);
+//	fread((void*)&staff_aux.offset_al_ppal,sizeof(staff_aux.offset_al_ppal),1,archivo_indice);
+//	fread((void*)&staff_aux.profesion,sizeof(staff_aux.profesion),1,archivo_indice);
 
 	FILE * archivo_conc;
 	archivo_conc = fopen(this->n_arch_conc_string.c_str(),"r+b");
@@ -488,7 +496,9 @@ salidas indice::getStaff(int ID_staff,staff& staff_d){
 
 	es_conc_nom nombre;
 	fread((void*)&nombre.longitud,sizeof(nombre.longitud),1,archivo_conc);
-	fread((void*)&nombre.string,nombre.longitud*sizeof(char),1,archivo_conc);
+	nombre.string=new char[nombre.longitud + 1];
+	nombre.string[nombre.longitud]='\0';
+	fread((void*)nombre.string,nombre.longitud,1,archivo_conc);
 
 	staff aux(nombre.string,staff_aux.profesion);
 
@@ -515,7 +525,9 @@ salidas indice::getNombrePelicula (string& nombre, int ID_pelicula){
 	es_conc_nom nombre_pel;
 
 	fread((void*)&nombre_pel.longitud,sizeof(nombre_pel.longitud),1,archivo_conc);
-	fread((void*)&nombre_pel.string,nombre_pel.longitud*sizeof(char),1,archivo_conc);
+	nombre_pel.string=new char[nombre_pel.longitud + 1];
+	nombre_pel.string[nombre_pel.longitud]='\0';
+	fread((void*)nombre_pel.string,nombre_pel.longitud*sizeof(char),1,archivo_conc);
 
 	nombre=nombre_pel.string;
 

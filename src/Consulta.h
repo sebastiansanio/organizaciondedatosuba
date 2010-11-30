@@ -25,7 +25,7 @@ class Consulta {
 	bool tieneArchivoPreConsulta;
 	ArchivoPreConsulta* archivoConsulta;
 	bool armarArchivoPreConsulta(int gradoMax);
-		//indice index;
+	indice* index;
 		//list<string> res_consulta;
 
 	public:
