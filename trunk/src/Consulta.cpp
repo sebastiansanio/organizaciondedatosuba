@@ -21,13 +21,13 @@ list<peliculaHijo> Consulta::staffHijos(int staffID){
 	list<peliculaHijo> lista;
 	list<int> peliculas;
 	salidas as=index->getAllPeliculas(staffID,peliculas);
-	if(as==error)
-		cout<<"error"<<endl;
+//	if(as==error)
+//		cout<<"error uh"<<endl;
 	list<int>::iterator iter = peliculas.begin();
 	while(iter!=peliculas.end()){
 		list<int> actores;
 		salidas as=index->getAllStaff((*iter),staffID,actores);
-		if(as==error) cout<<"error"<<endl;
+//		if(as==error) cout<<"error inin"<<endl;
 		list<int>::iterator iterador=actores.begin();
 		while(iterador!=actores.end()){
 			peliculaHijo aux;
