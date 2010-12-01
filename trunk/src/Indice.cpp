@@ -1,4 +1,5 @@
 #include "Indice.h"
+#include <stdio.h>
 
 void destruir(void * stream){
 	delete (registroAuxiliar2*)stream;
@@ -281,6 +282,18 @@ indice::indice(string nombre_arch){
 	long int offset=ftell(archivo);
 	fseek(archivo,0,SEEK_SET);
 	this->cantidad_staff=offset/sizeof(es_indice) -1;
+	remove("auxiliar");
+	remove("auxiliar2");
+	remove("archivoPrincipalAux");
+	for(unsigned int strCont=0;strCont<13;strCont++){
+		string nombre="Temp_auxiliar2";
+		ostringstream s;
+		s<<strCont;
+		nombre+=s.str();
+		nombre+=".bin";
+		remove(nombre.c_str());
+	}
+	remove("Merge.bin");
 }
 
 salidas indice::getID_staff(const string& nombre, int& id){
