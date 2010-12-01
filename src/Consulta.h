@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#define CANTVERTICES 3000
+#define CANTVERTICES 1459
 #define GRADOMAX 6
 
 typedef struct {

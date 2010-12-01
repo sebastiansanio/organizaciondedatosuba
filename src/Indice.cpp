@@ -362,6 +362,7 @@ salidas indice::getAllPeliculas(int ID_staff, list<int>& ID_peliculas){
 	while(pelicula.distancia_a_padre!=0){//veo que no levante un actor nuevo
 		ID_peliculas.push_front(pelicula.id);
 		fread((void*)&pelicula,sizeof(es_ppal),1,archivo_ppal);
+		if(feof(archivo_ppal)) break;
 	}
 
 	fclose(archivo_indice);
