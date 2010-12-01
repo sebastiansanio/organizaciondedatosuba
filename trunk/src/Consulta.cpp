@@ -15,7 +15,6 @@ Consulta::Consulta(bool preConsulta){
 			this->archivoConsulta = new ArchivoPreConsulta(CANTVERTICES,false);
 		}
 	}
-	imprimirCaminoMinimoActoresNombre("Yves Michel-Beneche","Brian De Palma");
 }
 
 list<peliculaHijo> Consulta::staffHijos(int staffID){
@@ -42,89 +41,6 @@ list<peliculaHijo> Consulta::staffHijos(int staffID){
 	}
 	peliculas.clear();
 	return lista;
-//	list<peliculaHijo> lista;
-//	peliculaHijo aux;
-//	if(staffID==1){
-//		aux={2,1};
-//		lista.push_back(aux);
-//		aux={3,4};
-//		lista.push_back(aux);
-//	} else if (staffID==2){
-//		aux={1,1};
-//		lista.push_back(aux);
-//		aux={3,5};
-//		lista.push_back(aux);
-//		aux={10,2};
-//		lista.push_back(aux);
-//		aux={0,3};
-//		lista.push_back(aux);
-//	} else if (staffID==3){
-//		aux={1,4};
-//		lista.push_back(aux);
-//		aux={2,5};
-//		lista.push_back(aux);
-//		aux={4,6};
-//		lista.push_back(aux);
-//		aux={5,16};
-//		lista.push_back(aux);
-//		aux={7,15};
-//		lista.push_back(aux);
-//	} else if (staffID==4){
-//		aux={3,6};
-//		lista.push_back(aux);
-//		aux={9,9};
-//		lista.push_back(aux);
-//		aux={10,7};
-//		lista.push_back(aux);
-//	} else if (staffID==5){
-//		aux={3,16};
-//		lista.push_back(aux);
-//		aux={7,13};
-//		lista.push_back(aux);
-//		aux={0,17};
-//		lista.push_back(aux);
-//	} else if (staffID==6){
-//		aux={9,10};
-//		lista.push_back(aux);
-//		aux={8,11};
-//		lista.push_back(aux);
-//	} else if (staffID==7){
-//		aux={3,15};
-//		lista.push_back(aux);
-//		aux={5,13};
-//		lista.push_back(aux);
-//		aux={9,14};
-//		lista.push_back(aux);
-//	} else if (staffID==8){
-//		aux={6,11};
-//		lista.push_back(aux);
-//		aux={10,8};
-//		lista.push_back(aux);
-//		aux={0,12};
-//		lista.push_back(aux);
-//	} else if (staffID==9){
-//		aux={4,9};
-//		lista.push_back(aux);
-//		aux={6,10};
-//		lista.push_back(aux);
-//		aux={7,14};
-//		lista.push_back(aux);
-//	} else if (staffID==10){
-//		aux={2,2};
-//		lista.push_back(aux);
-//		aux={4,7};
-//		lista.push_back(aux);
-//		aux={8,8};
-//		lista.push_back(aux);
-//	} else if (staffID==0){
-//		aux={2,3};
-//		lista.push_back(aux);
-//		aux={5,17};
-//		lista.push_back(aux);
-//		aux={8,12};
-//		lista.push_back(aux);
-//	}
-//	return lista;
 }
 
 list<peliculaHijo> Consulta::caminoMinimoActores(int staffOrigen, int staffDestino, int gradoMax){
@@ -141,7 +57,6 @@ list<peliculaHijo> Consulta::caminoMinimoActores(int staffOrigen, int staffDesti
 	}
 	list<peliculaHijo> verticesHijos;
 	for(int distancia=0; distancia<gradoMax; distancia++){
-		cout<<"Distancia: "<<distancia<<endl;
 		for(int vert=0; vert<CANTVERTICES; vert++){
 			if(tabla[vert].conocido==0 && tabla[vert].distancia==distancia){
 				tabla[vert].conocido=1;
@@ -191,7 +106,6 @@ list<padrePeliculaHijo> Consulta::actoresHijos(int staffOrigen, int gradoMax){
 	}
 	list<peliculaHijo> verticesHijos;
 	for(int distancia=0; distancia<gradoMax; distancia++){
-		cout<<"Distancia: "<<distancia<<endl;
 		for(int vert=0; vert<CANTVERTICES; vert++){
 			if(tabla[vert].conocido==0 && tabla[vert].distancia==distancia){
 				tabla[vert].conocido=1;
@@ -233,19 +147,33 @@ void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
 	if(tieneArchivoPreConsulta){
 		list<padrePeliculaHijo> lista = this->archivoConsulta->CaminoActorHijo(actorOrigen,actorDestino);
 		list<padrePeliculaHijo>::iterator iter = lista.begin();
-		while(iter!=lista.end()){
-			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << endl;
+		if(lista.size()>0){
+			staff actor("asd",'c');
+			salidas as=index->getStaff((*iter).hijo,actor);
+			cout << "Actor\t" << actor.getNombre() << endl;
 			iter++;
+			while(iter!=lista.end()){
+				staff actor("asd",'c');
+				salidas as=index->getStaff((*iter).hijo,actor);
+				cout << "Pelicula\t" << (*iter).pelicula << endl << "Actor\t" << actor.getNombre() << endl;
+				iter++;
+			}
 		}
 	} else {
 		list<peliculaHijo> lista= caminoMinimoActores(actorOrigen,actorDestino,6);
 		list<peliculaHijo>::iterator iter = lista.begin();
-		cout << lista.size() << endl;
-		while(iter!=lista.end()){
+		if(lista.size()>0){
 			staff actor("asd",'c');
 			salidas as=index->getStaff((*iter).hijo,actor);
-			cout << "Pelicula " << (*iter).pelicula << " Actor " << actor.getNombre() << endl;
+			cout << "Actor\t" << actor.getNombre() << endl;
 			iter++;
+			while(iter!=lista.end()){
+				as=index->getStaff((*iter).hijo,actor);
+				string nombrePelicula;
+				as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
+				cout << "Pelicula\t" << nombrePelicula << endl << "Actor\t" << actor.getNombre() << endl;
+				iter++;
+			}
 		}
 	}
 }
@@ -253,10 +181,18 @@ void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
 void Consulta::imprimirCaminoMinimoActoresNombre(string actorOrigen, string actorDestino){
 	int origenID;
 	int destinoID;
+	bool cerrar=false;
 	salidas as= index->getID_staff(actorOrigen,origenID);
-	if(as==error) cout<<"error"<<endl;
+	if(as==error){
+		cout<<"El actor origen no existe"<<endl;
+		cerrar=true;
+	}
 	as= index->getID_staff(actorDestino,destinoID);
-	if(as==error) cout<<"error"<<endl;
+	if(as==error){
+		cout<<"El actor destino no existe"<<endl;
+		cerrar=true;
+	}
+	if(cerrar) exit(0);
 	imprimirCaminoMinimoActores(origenID,destinoID);
 }
 
@@ -264,11 +200,44 @@ void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
 	if(tieneArchivoPreConsulta){
 		list<padrePeliculaHijo> lista = this->archivoConsulta->ActoresHijosADistancia(actorOrigen,distancia);
 		list<padrePeliculaHijo>::iterator iter = lista.begin();
+		int i=0;
 		while(iter!=lista.end()){
-			cout << "Pelicula " << (*iter).pelicula << " Actor " << (*iter).hijo << " Distancia " << (int)(*iter).distancia << endl;
+			staff actor("asd",'c');
+			if((*iter).distancia==distancia){
+				salidas as=index->getStaff((*iter).hijo,actor);
+				string nombrePelicula;
+				as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
+				cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
+				i++;
+			}
+			iter++;
+		}
+	} else {
+		list<padrePeliculaHijo> lista = actoresHijos(actorOrigen,distancia);
+		list<padrePeliculaHijo>::iterator iter = lista.begin();
+		int i=0;
+		while(iter!=lista.end()){
+			staff actor("asd",'c');
+			if((*iter).distancia==distancia){
+				salidas as=index->getStaff((*iter).hijo,actor);
+				string nombrePelicula;
+				as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
+				cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
+				i++;
+			}
 			iter++;
 		}
 	}
+}
+
+void Consulta::imprimirActoresADistanciaNombre(string actorOrigen, char distancia){
+	int origenID;
+	salidas as= index->getID_staff(actorOrigen,origenID);
+	if(as==error){
+		cout<<"El actor no existe"<<endl;
+		exit(0);
+	}
+	imprimirActoresADistancia(origenID,distancia);
 }
 
 Consulta::~Consulta() {
