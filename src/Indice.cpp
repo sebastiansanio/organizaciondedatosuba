@@ -54,6 +54,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	//El tamaño de los registros es de tamaño fijo.
 	archivoAuxiliar=fopen("auxiliar","w+b");
 	while (it!=listaDeArchivos.end()){
+		cout<<*it<<endl;
 		prs = new parser((it->c_str()));
 		peliculasArchivo=prs->getPeliculasDeArchivo();
 		list<pelicula*>::iterator iteradorPelicula=peliculasArchivo.begin();
@@ -124,7 +125,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	//Genero particiones
 	unsigned int cantArch;
 
-	replac_selection metodo_ordenamiento(30,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
+	replac_selection metodo_ordenamiento(2500,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
 	cantArch=metodo_ordenamiento.ordenar(string("auxiliar2"));
 
 	//Mergeo las particiones
@@ -135,7 +136,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 		stringstream streamAux;
 		streamAux<<"Temp_auxiliar2"<<strCont<<".bin";
 		streamAux>> vectorString[strCont];
-		cout<<vectorString[strCont]<<endl;
+//		cout<<vectorString[strCont]<<endl;
 	}
 	one_way_merge merger(cantArch,vectorString,sizeof(registroAuxiliar2),construir,destruir,comparar,persistir);
 	merger.mergear();
@@ -239,6 +240,7 @@ indice::indice(list<string>& listaDeArchivos,string nombre_arch){
 	es_ppal regBusq;
 	int idBuscado;
 	int posicion;
+	cout<<"Va a empezar con los offset al proximo"<<endl;
 	while(!feof(archivoAuxiliar)){
 		posicion=ftell(archivoAuxiliar);
 		fread(&regRead,sizeof(es_ppal),1,archivoAuxiliar);

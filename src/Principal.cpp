@@ -9,6 +9,15 @@ int main(int argc,char* argv[]){
 				cout<<"Se generara el indice"<<endl;
 				list<string> nombresDeArchivo;
 				nombresDeArchivo.push_front(string("data-0.xml"));
+				nombresDeArchivo.push_back(string("data-1.xml"));
+				for(int i=3;i<54;i++){
+					string nombre="data-";
+					ostringstream s;
+					s<<i;
+					nombre+=s.str();
+					nombre+=".xml";
+					nombresDeArchivo.push_back(string(nombre));
+				}
 				string nombreIndice="TpDatos";
 				indice indice(nombresDeArchivo,nombreIndice);
 			}else if(strcmp(argv[1],"auxiliar")==0){

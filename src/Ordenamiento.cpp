@@ -228,7 +228,7 @@ void one_way_merge::mergear() {
 
 	for (unsigned i = 0;i < cant_particiones ; i++) {
 		input[i].open(vector_nombres[i].c_str(),ios::in | ios::binary);
-		cout << "Nombre archivo " << vector_nombres[i] << endl;
+//		cout << "Nombre archivo " << vector_nombres[i] << endl;
 		if (!input[i].is_open()) {
 			cout << "ERROR EN EL MERGE, NO SE PUDO ABRIR EL ARCHIVO " << vector_nombres[i].c_str() << endl;
 			exit (1);

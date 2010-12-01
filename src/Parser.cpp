@@ -83,7 +83,7 @@ list<pelicula*> parser::getPeliculasDeArchivo() {
 
 
 	char* buffer = strtok(xmlAux, "<>");
-	while (strcmp(buffer, "/films") != 0 and buffer != NULL) {
+	while (buffer != NULL) {
 		if (strcmp(buffer, "film") == 0) {
 			while (strcmp(buffer, "id") != 0) {
 				buffer = strtok(NULL, "<>");
