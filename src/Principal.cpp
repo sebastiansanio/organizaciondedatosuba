@@ -121,8 +121,18 @@ int main(int argc,char* argv[]){
 			if(strcmp(argv[1],"--from")==0){
 				if(strcmp(argv[3],"--to")==0){
 					Consulta consulta(false);
+					string actorOrigen(argv[2]);
+					string actorDestino(argv[4]);
+					consulta.imprimirCaminoMinimoActoresNombre(actorOrigen,actorDestino);
 				}else if(strcmp(argv[3],"--degree")==0){
-
+					Consulta consulta(false);
+					string actorOrigen(argv[2]);
+					char distancia=atoi(argv[4]);
+					if(distancia<=GRADOMAX){
+						consulta.imprimirActoresADistanciaNombre(actorOrigen,distancia);
+					} else {
+						cout<<"Ingreso un grado de separacion mayor al maximo"<<endl;
+					}
 				}else{
 					cout<<"3er parametro incorrecto debe ser \"--to\" o \"--degree\""<<endl;
 				}
