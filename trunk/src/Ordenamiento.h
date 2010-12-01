@@ -110,11 +110,13 @@ public:
 				void (*destructor) (void*),int (*comp) (void*,void*),
 				void (*persistencia) (ofstream&,void*));
 
+		one_way_merge(){ v_elem = new T_elem [4];};
+
 		~one_way_merge();
 
 		void mergear();
 
-
+		void mostrar() ;
 
 };
 

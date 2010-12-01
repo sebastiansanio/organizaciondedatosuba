@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "Ordenamiento.h"
 
 replac_selection::replac_selection(int buffTam, int dataTam,void* (*constructor)(char*),
@@ -210,10 +211,14 @@ one_way_merge::one_way_merge (unsigned int cant_particiones,string* nombres_part
 	this->destructor = destructor;
 	this->vector_nombres  = nombres_part;
 	this->v_elem = new T_elem [cant_particiones];
+	this->dataTam = dataTam;
 
 }
 
-one_way_merge::~one_way_merge() {}
+one_way_merge::~one_way_merge()
+{
+	delete [] v_elem;
+}
 
 void one_way_merge::mergear() {
 
@@ -223,6 +228,7 @@ void one_way_merge::mergear() {
 
 	for (unsigned i = 0;i < cant_particiones ; i++) {
 		input[i].open(vector_nombres[i].c_str(),ios::in | ios::binary);
+		cout << "Nombre archivo " << vector_nombres[i] << endl;
 		if (!input[i].is_open()) {
 			cout << "ERROR EN EL MERGE, NO SE PUDO ABRIR EL ARCHIVO " << vector_nombres[i].c_str() << endl;
 			exit (1);
@@ -246,22 +252,22 @@ void one_way_merge::mergear() {
 
 	bool terminado = false;//termina cuando no hay mas elementos que extraer en ningun archivo y el vector
 							//esta vacio
-	char stream [dataTam+1];
+	char* stream = new char [dataTam+1];
 
 	while (!terminado){
 		int cont = 0;
+		//cuento la cantidad de elementos del vector
 		for (unsigned i = 0; i < cant_particiones ; i++){
 			if (v_elem[i].est==ocupado) {
 				cont++;
 			}
 		}
 
-
-		stream [dataTam]= '\0';
+		memset (stream,0,dataTam+1);
 		if (cont==0) terminado = true;
 
 		if (!terminado) {
-			int posMin = elemMasPequenio(cont);
+			int posMin = elemMasPequenio(cant_particiones);
 			void* min,*aux;
 
 			aux = NULL;
@@ -276,8 +282,10 @@ void one_way_merge::mergear() {
 			if (aux == NULL) {//se acabo la particion
 				v_elem[posMin].est = vacio;
 			}
+			else
+				v_elem[posMin].elem = aux;
 
-			destructor(min);
+			destructor(min);//borro el elemento q fue persistido
 
 		}
 
@@ -287,7 +295,7 @@ void one_way_merge::mergear() {
 		input[i].close();
 
 	output.close();
-
+	delete [] stream;
 }
 
 
@@ -329,16 +337,42 @@ int one_way_merge::elemMasPequenio(int cant_elem) {
 /*Completo el vector con un elemento de cada particion*/
 void one_way_merge::completarArray(ifstream e []) {
 
-	char  stream [dataTam+1];
+	char*  stream = new char [dataTam+1];
+
 
 	unsigned i =0;
+
+
+
 	while (i < cant_particiones){
+		memset(stream,0,dataTam+1);
 		e[i].read(stream,dataTam);
-		stream [dataTam]= '\0';
 		v_elem [i].elem = constructor (stream);
 		v_elem [i].est = ocupado;
 		i++;
-
 	}
+
+	delete[] stream;
+}
+
+void one_way_merge::mostrar() {
+	struct registroAuxiliar2{
+		char nombreDeActor[100];
+		int offsetPelicula;
+		char profesion;
+	};
+
+
+	ifstream i ;
+	i.open("Merge.bin",ios::in | ios::binary);
+	registroAuxiliar2 regaux;
+
+	int contador = 0;
+	while (i.read((char*)&regaux,sizeof(registroAuxiliar2))&& contador < 1000) {
+		cout << "Actor "  << regaux.nombreDeActor << " offset " << regaux.offsetPelicula << " profesion " << regaux.profesion << endl;
+		contador ++;
+	}
+
+
 }
 
