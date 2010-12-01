@@ -6,7 +6,9 @@
 
 using namespace std;
 
-#define CANTVERTICES 11
+#define CANTVERTICES 3000
+#define GRADOMAX 6
+#define GRADOMAXPRECONSULTA 3
 
 typedef struct {
 	bool conocido;
@@ -41,6 +43,8 @@ class Consulta {
 		void imprimirCaminoMinimoActores(int actorOrigen, int actorDestino);
 
 		void imprimirActoresADistancia(int actorOrigen, char distancia);
+
+		void imprimirCaminoMinimoActoresNombre(string actorOrigen, string actorDestino);
 
 		virtual ~Consulta();
 };
