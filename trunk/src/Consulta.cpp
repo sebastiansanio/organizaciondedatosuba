@@ -139,6 +139,7 @@ list<padrePeliculaHijo> Consulta::actoresHijos(int staffOrigen, int gradoMax){
 bool Consulta::armarArchivoPreConsulta(int gradoMax){
 	this->archivoConsulta = new ArchivoPreConsulta(CANTVERTICES,true);
 	for(int i=1;i<=CANTVERTICES;i++){
+		cout << i << endl;
 		if(!archivoConsulta->agregarHijosActor(i,actoresHijos(i,gradoMax))) return false;
 	}
 }
