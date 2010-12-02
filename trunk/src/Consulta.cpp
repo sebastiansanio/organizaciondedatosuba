@@ -207,10 +207,12 @@ void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
 			staff actor("asd",'c');
 			if((*iter).distancia==distancia){
 				salidas as=index->getStaff((*iter).hijo,actor);
-				string nombrePelicula;
-				as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
-				cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
-				i++;
+				if(as!=error){
+					string nombrePelicula;
+					as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
+					cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
+					i++;
+				}
 			}
 			iter++;
 		}
@@ -222,10 +224,12 @@ void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
 			staff actor("asd",'c');
 			if((*iter).distancia==distancia){
 				salidas as=index->getStaff((*iter).hijo,actor);
-				string nombrePelicula;
-				as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
-				cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
-				i++;
+				if(as!=error){
+					string nombrePelicula;
+					as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
+					cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
+					i++;
+				}
 			}
 			iter++;
 		}
