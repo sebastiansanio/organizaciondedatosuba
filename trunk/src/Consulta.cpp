@@ -57,7 +57,6 @@ list<peliculaHijo> Consulta::caminoMinimoActores(int staffOrigen, int staffDesti
 	}
 	list<peliculaHijo> verticesHijos;
 	for(int distancia=0; distancia<gradoMax; distancia++){
-		cout << "distancia "<< distancia << endl;
 		for(int vert=0; vert<CANTVERTICES; vert++){
 			if(tabla[vert].conocido==0 && tabla[vert].distancia==distancia){
 				tabla[vert].conocido=1;
@@ -173,7 +172,7 @@ void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
 				as=index->getStaff((*iter).hijo,actor);
 				string nombrePelicula;
 				as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
-				cout << "Pelicula\t" << nombrePelicula << endl << "Actor\t" << actor.getNombre() << endl;
+				cout << "Este trabajo en " << nombrePelicula << " con " << actor.getNombre() << " (" << actor.getProfesion() << ")" << endl;
 				iter++;
 			}
 		}
@@ -210,7 +209,7 @@ void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
 				if(as!=error){
 					string nombrePelicula;
 					as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
-					cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
+					cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << " (" << actor.getProfesion() << ")" << endl;
 					i++;
 				}
 			}
@@ -227,7 +226,7 @@ void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
 				if(as!=error){
 					string nombrePelicula;
 					as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
-					cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << endl;
+					cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << " (" << actor.getProfesion() << ")" << endl;
 					i++;
 				}
 			}
