@@ -70,6 +70,9 @@ class indice{
 		string n_arch_principal;
 		string n_arch_conc_string;
 		int cantidad_staff; //para la busqueda binaria
+		FILE * archivoIndice;
+		FILE * archivoConc;
+		FILE * archivoPpal;
 
 	public:
 

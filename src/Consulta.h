@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#define CANTVERTICES 100000
+#define CANTVERTICES 21777
 
 typedef struct {
 	bool conocido;
