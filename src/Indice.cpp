@@ -447,13 +447,13 @@ salidas indice::getAllStaff(int ID_pelicula,int Id_staff,list<int>& ID_staff ){
 			return error;//quiere decirº que no llego a un id de actor
 
 		}
-		list<int>::iterator iterador=ID_staff.begin();
-		while(iterador!=ID_staff.end()){
-			if((*iterador)==staff_levantado.id){
-				return exito;
-			}
-			iterador++;
-		}
+//		list<int>::iterator iterador=ID_staff.begin();
+//		while(iterador!=ID_staff.end()){
+//			if((*iterador)==staff_levantado.id){
+//				return exito;
+//			}
+//			iterador++;
+//		}
 		if(staff_levantado.id!=Id_staff){
 			ID_staff.push_front(staff_levantado.id);
 		}

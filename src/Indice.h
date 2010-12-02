@@ -21,7 +21,7 @@ struct es_indice{
 };
 
 struct es_ppal{
-	char distancia_a_padre;
+	unsigned char distancia_a_padre;
 	int id;
 	int offset_proximo;
 };
