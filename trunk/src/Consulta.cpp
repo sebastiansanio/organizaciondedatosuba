@@ -226,7 +226,7 @@ void Consulta::imprimirActoresADistancia(int actorOrigen, char distancia){
 				if(as!=error){
 					string nombrePelicula;
 					as=index->getNombrePelicula(nombrePelicula,(*iter).pelicula);
-					cout << i << "- Pelicula\t" << nombrePelicula << endl << "\tActor\t" << actor.getNombre() << " (" << actor.getProfesion() << ")" << endl;
+					cout << i <<" - "<< actor.getNombre() << " (" << actor.getProfesion() << ")" << endl;
 					i++;
 				}
 			}
