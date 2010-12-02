@@ -57,6 +57,7 @@ list<peliculaHijo> Consulta::caminoMinimoActores(int staffOrigen, int staffDesti
 	}
 	list<peliculaHijo> verticesHijos;
 	for(int distancia=0; distancia<gradoMax; distancia++){
+		cout << "distancia "<< distancia << endl;
 		for(int vert=0; vert<CANTVERTICES; vert++){
 			if(tabla[vert].conocido==0 && tabla[vert].distancia==distancia){
 				tabla[vert].conocido=1;
@@ -161,7 +162,7 @@ void Consulta::imprimirCaminoMinimoActores(int actorOrigen, int actorDestino){
 			}
 		}
 	} else {
-		list<peliculaHijo> lista= caminoMinimoActores(actorOrigen,actorDestino,6);
+		list<peliculaHijo> lista= caminoMinimoActores(actorOrigen,actorDestino,GRADOMAX);
 		list<peliculaHijo>::iterator iter = lista.begin();
 		if(lista.size()>0){
 			staff actor("asd",'c');

@@ -15,7 +15,7 @@
 
 using namespace std;
 
-#define GRADOMAX 4
+#define GRADOMAX 6
 
 typedef struct {
 	int hijo;
